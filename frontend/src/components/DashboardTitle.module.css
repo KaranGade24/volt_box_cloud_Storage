@@ -1,0 +1,16 @@
+.dashboard-title {
+  height: 70px;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding-left: 50px;
+  padding-top: 7px;
+  padding-bottom: 18px;
+}
+
+@media screen and (max-width: 970) {
+  .dashboard-title {
+    width: calc(100% - 61px);
+  }
+}

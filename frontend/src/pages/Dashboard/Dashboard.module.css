@@ -1,0 +1,109 @@
+/* -------------- Base Layout -------------- */
+.wrapper {
+  width: 100%;
+  max-width: 1440px;
+  background: hsl(230 20% 6%);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 96vh;
+  overflow: hidden;
+  color: white;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-darker, #0d0e13);
+  overflow: hidden;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  overflow-y: auto;
+  min-height: 0; /* 👈 Needed so scrollable children work */
+}
+
+.title {
+  align-self: flex-start;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 12px;
+}
+
+/* ✅ This will now scroll and show FileStats */
+.storageContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  min-height: 0;
+}
+
+.storageContainer::-webkit-scrollbar {
+  width: 6px;
+}
+.storageContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+.storageContainer::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Top two cards */
+.topSection {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Stats cards grid */
+.statsSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* -------------- Responsive Breakpoints -------------- */
+
+/* Tablet / small‑desktop */
+@media (max-width: 1024px) {
+  .topSection {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 1.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .wrapper {
+    border: none;
+    border-radius: 0;
+  }
+
+  .content {
+    padding: 1rem;
+  }
+
+  /* stats grid collapses to one column */
+  .statsSection {
+    grid-template-columns: 1fr;
+    padding-bottom: 110px;
+  }
+
+  /* ensure top cards fill width */
+  .topSection > * {
+    width: 100%;
+  }
+}

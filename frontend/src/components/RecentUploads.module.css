@@ -1,0 +1,265 @@
+/* 
+ .recent-uploads-container {
+  background-color: hsl(222deg 25% 8%);
+  padding: 1rem;
+  width: 54%;
+  height: auto;
+  border-radius: 12px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.recent-uploads-container h3 {
+  color: #e0e0e0;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.uploads-grid {
+  width: 80%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.upload-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: hsl(222deg 25% 8%);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.4);
+  cursor: pointer;
+}
+
+.upload-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+.pdf-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ff4b4b;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+
+.play-icon-overlay {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  padding: 8px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.explore-more {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 18px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.explore-more:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+
+@media screen and (max-width: 1024px) {
+  .recent-uploads-container {
+    width: 52%;
+    margin: 10px 0;
+  }
+  .uploads-grid {
+    width: 84%;
+  }
+}
+
+@media screen and (max-width: 830px) {
+  .recent-uploads-container {
+    width: 75%;
+    height: 72%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .recent-uploads-container {
+    width: 90%;
+    height: 90%;
+    padding: 1rem 0.75rem;
+  }
+
+  .uploads-grid {
+    width: 82%;
+    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (max-width: 660px) {
+  .recent-uploads-container {
+    width: 90%;
+    height: 90%;
+    padding: 1rem 0.75rem;
+  }
+
+  .uploads-grid {
+    width: 100%;
+    gap: 16px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media screen and (max-width: 580px) {
+  .recent-uploads-container {
+    height: 70%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .recent-uploads-container {
+    height: 60%;
+  }
+  .upload-item {
+    width: 100%;
+  }
+
+  .explore-more {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .recent-uploads-container {
+    padding: 0.75rem;
+    height: 50%;
+  }
+} */
+/* src/components/RecentUploads.module.css */
+:root {
+  --gap: 1rem;
+}
+
+.card {
+  flex: none;
+  width: 54%;
+  max-width: 500px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
+
+.title {
+  font-size: 1.125rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Force a 4×2 grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: var(--gap);
+}
+
+.item {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--bg-dark);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px var(--primary);
+}
+
+.item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: #ff4b4b;
+  font-weight: bold;
+}
+
+.videoThumb {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2c2f3a, #242731);
+}
+
+.playOverlay {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  padding: 0.4rem;
+  color: #fff;
+}
+
+.explore {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Optional: ensure card always shows exactly 2 rows worth of items */
+.card {
+  /* height = two item-heights + vertical gaps + title button etc. */
+  /* tweak as needed to prevent overflow */
+  overflow: hidden;
+}
+
+@media screen and (max-width: 900px) {
+  .card {
+    width: 80%;
+  }
+}

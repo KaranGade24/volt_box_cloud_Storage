@@ -1,0 +1,105 @@
+.sidebar-container {
+  height: 100vh;
+  width: 250px;
+  background-color: hsl(222deg 26% 7%);
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-right: 1px solid #1862cb;
+  position: relative;
+  /* overflow-x: hidden; */
+  transition: all 0.4s ease-in-out;
+}
+
+.sidebar-body {
+  height: 70%;
+  overflow: auto;
+  margin-top: 10px;
+  color: white;
+  padding: 10px 0;
+}
+
+.sidebar-body a {
+  text-decoration: none; /* remove underline */
+  color: inherit; /* inherit text color from parent */
+  display: block; /* allow full-width clickable area */
+}
+
+.sidebar-body p {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 15px;
+  margin: 4px 10px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.sidebar-body p:first-of-type {
+  margin: 5px;
+}
+
+.sidebar-body p:hover {
+  cursor: pointer;
+  background-color: #112a37;
+  box-shadow: 0 0 12px hsl(206, 43%, 16%);
+}
+.logo:hover {
+  background-color: #112a37;
+}
+.sidebar-icon {
+  font-size: 20px;
+  transition: color 0.2s ease;
+}
+
+.sidebar-body p:hover .sidebar-icon {
+  color: #4db8ff;
+}
+
+/* Active link style */
+.active p {
+  background-color: hsl(200, 53%, 14%);
+  box-shadow: 0 0 12px hsl(206, 43%, 16%);
+  color: #00bfff;
+}
+
+.active p span,
+.active p svg {
+  color: #00bfff;
+}
+
+.sidebarTooltip {
+  visibility: hidden;
+  z-index: 999999 !important;
+  background-color: #1a1d26 !important;
+  color: #00bfff !important;
+  font-size: 14px !important;
+  padding: 6px 10px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive collapsed state */
+@media screen and (max-width: 970px) {
+  .sidebar-container {
+    position: relative;
+    width: 60px;
+    border-top-left-radius: 0px;
+    transform: translateX(0);
+  }
+
+  .sidebar-body p {
+    justify-content: center;
+    padding: 10px;
+    margin: 4px auto;
+  }
+
+  .sidebar-body p span:last-child {
+    display: none; /* hide text labels */
+  }
+  .sidebarTooltip {
+    visibility: visible;
+  }
+}

@@ -1,0 +1,199 @@
+/* AlbumPage.module.css */
+
+/* -------------- Full‑Screen Page Container -------------- */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* fill viewport height */
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+  overflow: hidden; /* contain scrolls */
+  box-sizing: border-box;
+  color: #e2e2e2;
+}
+
+/* -------------- Inner Content Area -------------- */
+.content {
+  flex: 1; /* take all vertical space */
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow: hidden; /* so albumGrid can scroll */
+  box-sizing: border-box;
+}
+
+/* -------------- Header (Title + Button) -------------- */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.title {
+  flex: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.createBtn {
+  background: #4f9df9;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 8px #4f9df9;
+  white-space: nowrap;
+}
+
+/* -------------- Album Grid (Scrollable) -------------- */
+.albumGrid {
+  flex: 1; /* fill leftover space */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  padding: 10px;
+  padding-bottom: 150px; /* room for modal trigger */
+  overflow-y: auto;
+  box-sizing: border-box;
+  height: 400px;
+}
+
+/* Custom scrollbar */
+.albumGrid::-webkit-scrollbar {
+  width: 6px;
+}
+.albumGrid::-webkit-scrollbar-track {
+  background: transparent;
+}
+.albumGrid::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+.albumGrid {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+/* -------------- Album Card -------------- */
+.albumCard {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid #2e2e2e;
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.albumCard:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.albumCover {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.albumCard h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #e2e2e2;
+}
+
+.tagGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  font-size: 0.75rem;
+  background: #1f1f27;
+  padding: 4px 8px;
+  border-radius: 10px;
+  color: #c2c2c2;
+}
+
+.public,
+.private {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.public {
+  background: #194de9;
+  color: #fff;
+}
+.private {
+  background: #444;
+  color: #aaa;
+}
+
+/* -------------- Create‑Modal Overlay -------------- */
+.modalWrapper {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+/* -------------- Responsive Breakpoints -------------- */
+@media (max-width: 1024px) {
+  .albumCover {
+    height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .albumGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 2fr));
+  }
+  .title {
+    /* font-size: 1.25rem; */
+    flex: none;
+  }
+  .createBtn {
+    font-size: 0.9rem;
+    padding: 5px 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  /* Full‑width on mobile */
+  /* .page {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+  } */
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .title {
+    align-self: flex-start;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .albumGrid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 2fr));
+  }
+}

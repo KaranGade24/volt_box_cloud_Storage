@@ -1,0 +1,7 @@
+.sidebar-icon {
+  font-size: 20px;
+  color: white;
+  margin-right: 10px;
+  transition: color 0.3s ease, transform 0.3s ease;
+  vertical-align: middle;
+}

@@ -1,0 +1,96 @@
+.container {
+  background-color: hsl(222deg 25% 8%);
+  border-radius: 12px;
+  /* padding: 1rem 1.5rem; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 90%;
+  min-width: 40%;
+  width: 90%;
+  margin: auto;
+  box-sizing: border-box;
+  overflow: auto;
+  padding-left: 70px;
+}
+
+.container::-webkit-scrollbar {
+  height: 8px;
+}
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.container::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+.statCard {
+  background-color: hsl(220, 20%, 10%);
+  border-radius: 10px;
+  width: 30%;
+  min-width: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #ccc;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+  margin: 5px;
+  height: fit-content;
+  margin: 10px;
+  padding: 10px;
+}
+
+.statCard:hover {
+  background-color: hsl(220, 20%, 14%);
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.2);
+}
+
+.icon {
+  font-size: 22px;
+  margin-bottom: 8px;
+  background-color: hsl(220, 20%, 20%);
+  padding: 10px;
+  border-radius: 8px;
+  color: #bbb;
+}
+
+.active .icon {
+  background-color: #00bfff;
+  color: white;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #f2f2f2;
+}
+
+.label {
+  font-size: 14px;
+  color: #999;
+}
+
+@media screen and (max-width: 550px) {
+  .container {
+    width: 90%;
+    min-width: 0px;
+    padding: 0px;
+    flex-wrap: wrap;
+    margin: 0;
+    justify-content: center;
+    gap: 10px;
+  }
+  .statCard {
+    margin: 10px 0px;
+    width: 35%;
+    height: fit-content;
+    padding: 3px;
+  }
+}
+
+/* @media screen and (max-width: 530px){ */
+
+/* } */

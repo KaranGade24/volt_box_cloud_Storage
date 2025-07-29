@@ -1,0 +1,73 @@
+.upload-btn {
+  width: 100%;
+  height: 50px;
+  padding: 10px 16px;
+  background-color: hsl(222, 26%, 10%);
+  color: hsl(228, 8%, 90%);
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin-top: 20px;
+  gap: 8px;
+  outline: none;
+}
+
+.upload-btn:hover {
+  cursor: pointer;
+  background-color: hsl(206deg 59% 16%);
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.4);
+  color: white;
+}
+
+.upload-btn:focus {
+  outline: 2px solid hsl(206deg 80% 60%);
+  outline-offset: 2px;
+}
+
+.upload-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+@media screen and (max-width: 768px) {
+  .upload-btn {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+
+  .upload-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .upload-btn {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .upload-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .upload-btn {
+    font-size: 13px;
+    padding: 8px 10px;
+    height: 45px;
+    margin-right: 25px;
+  }
+
+  .upload-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+}

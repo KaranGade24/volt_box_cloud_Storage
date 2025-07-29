@@ -1,0 +1,76 @@
+.card {
+  position: fixed; /* change from absolute for proper modal display */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background: rgba(30, 30, 40, 0.8);
+  backdrop-filter: blur(16px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75);
+  color: #e2e2e2;
+  z-index: 100000;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  border-radius: 12px;
+  color: #ccc;
+  font-size: 1.5rem;
+  width: fit-content;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+  word-break: break-all;
+}
+
+.meta {
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+.download {
+  margin-top: 1rem;
+}
+
+.download a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.download a:hover {
+  background-color: #1e90ff;
+}
+
+@media screen and (max-width: 480px)  {
+  .card{
+    width:200px;
+  }
+}

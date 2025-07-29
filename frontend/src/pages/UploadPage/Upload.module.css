@@ -1,0 +1,196 @@
+.mainUploadContainer {
+  height: 100%;
+  overflow-y: auto;
+  padding-bottom: 50px;
+  /* word-wrap: break-word; */
+  word-break: break-all;
+}
+
+.uploadContainer {
+  /* display: grid; */
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  background: hsl(222, 25%, 8%);
+  border-radius: 12px;
+  padding: 1.5rem 0px 1.5rem 12px;
+  color: #d4d4d4;
+  max-height: 90vh; /* Prevent it from growing past viewport */
+  overflow: hidden; /* Hide outer overflow */
+}
+
+/* Drop zone spans full width */
+.uploadArea {
+  grid-column: 1 / span 2;
+  border: 2px dashed #3a3a3a;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.uploadArea:hover,
+.uploadArea.active {
+  border-color: #3a9eff;
+}
+
+.uploadIcon {
+  font-size: 3rem;
+  color: #3a9eff;
+  margin-bottom: 0.5rem;
+}
+
+/* File list scrolls if too tall */
+.uploadQueue {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 0.5rem; /* space for scrollbar */
+  padding-bottom: 30px;
+  margin-top: 40px;
+  max-height: 300px;
+  width: 98%;
+}
+
+/* Individual file rows */
+.fileRow {
+  display: flex;
+  align-items: center;
+  background: #131313;
+  border-radius: 10px;
+  padding: 0.3rem;
+  gap: 0.33rem;
+  width: 98%;
+}
+
+.imageThumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.fileIcon {
+  font-size: 1rem;
+  color: #3a9eff;
+  flex-shrink: 0;
+}
+
+.fileInfo {
+  flex: 1;
+  width: 100%;
+}
+
+.progressBar {
+  background: #2a2a2a;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 4px 0;
+}
+
+.progress {
+  height: 100%;
+  background: #3a9eff;
+  transition: width 0.3s;
+}
+
+.success {
+  background: #00ff99 !important;
+}
+.failed {
+  background: #ff4d4d !important;
+}
+
+.controlBtn {
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-left: 6px;
+  border: none;
+  border-radius: 4px;
+  background-color: #444;
+  color: #fff;
+  cursor: pointer;
+}
+.controlBtn:hover {
+  background-color: #666;
+}
+
+.cancelIcon {
+  color: #777;
+  font-size: 1.2rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Sidebar also scrolls */
+.sidebarOptions {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-height: calc(90vh - 120px);
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.tag {
+  display: inline-block;
+  background: #2e2e2e;
+  color: #ccc;
+  padding: 0.25rem 0.75rem;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 1200px) {
+  .uploadContainer {
+    grid-template-columns: 1.5fr 1fr;
+  }
+}
+
+@media (max-width: 992px) {
+  .uploadContainer {
+    width: 100%;
+    display: block;
+    max-height: none;
+  }
+  .uploadArea {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .mainUploadContainer {
+    width: 98%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .mainUploadContainer {
+    width: 95%;
+  }
+}
+/* 
+.sidebarOptions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebarOptions::-webkit-scrollbar-track {
+  background-color: hsl(222deg 25% 10%);
+  border-radius: 10px;
+}
+
+.sidebarOptions::-webkit-scrollbar-thumb {
+  background-color: hsl(222deg 15% 40%);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.sidebarOptions::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(222deg 15% 60%);
+} */

@@ -1,0 +1,316 @@
+/* choosed card style */
+
+.selectedCard {
+  border: 2px solid #00ffcc;
+  position: relative;
+  background-color: #1a1a1a;
+}
+
+.checkOverlay {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background-color: rgba(0, 255, 204, 0.9);
+  border-radius: 50%;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkIcon {
+  color: #000;
+  font-size: 16px;
+}
+
+/* for back Btn for album page to albums */
+
+.backBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #00bfff;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.backBtn:hover {
+  color: #009acc;
+}
+
+/* main style */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #0f1015;
+}
+
+.myFilesWrapper {
+  background-color: hsl(230deg 20% 6%);
+  /* height: 100vh; */
+  width: 96%;
+  margin: auto;
+  display: flex;
+  overflow: hidden;
+  word-break: break-all;
+}
+
+.myFilesPage {
+  flex: 1;
+  padding: 2rem;
+  /* overflow-y: auto; */
+  box-sizing: border-box;
+  color: #e0e0e0;
+}
+
+.myFilesPage {
+  padding: 2rem;
+  color: #e0e0e0;
+  background-color: hsl(222deg 25% 8%);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  background-color: hsl(222, 25%, 10%);
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  gap: 8px;
+  color: #aaa;
+}
+
+.searchBox input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #eee;
+  font-size: 14px;
+}
+
+.uploadBtn {
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.uploadBtn:hover {
+  background-color: #00a6d6;
+}
+.filters {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+}
+
+.select {
+  padding: 0.6rem 1rem;
+  background-color: hsl(222, 26%, 14%);
+  color: hsl(228, 8%, 90%);
+  border: 1px solid hsl(222, 15%, 30%);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+.select option {
+  cursor: pointer;
+}
+
+.dropdownMenu {
+  width: 100px;
+  position: absolute;
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 8px;
+  top: 30px;
+  right: -13px;
+  z-index: 99999;
+}
+
+.dropdownMenu div {
+  display: flex;
+  /* flex-direction: column; */
+  cursor: pointer;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 10px;
+}
+.dropdownMenu svg {
+  padding-right: 5px;
+}
+.dropdownMenu div:hover {
+  background-color: #333;
+  color: #00bfff;
+}
+.dropdownMenu:disabled {
+  display: none;
+}
+
+.filesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  height: 80%;
+  padding-bottom: 200px;
+  overflow-y: auto;
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* or 100vh if full page */
+  width: 60vw;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid #ccc;
+  border-top-color: #00bfff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fileCard {
+  background-color: hsl(220, 20%, 12%);
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+
+.fileCard:hover {
+  background-color: hsl(220, 20%, 16%);
+}
+
+.icon {
+  font-size: 36px;
+  margin-bottom: 0.5rem;
+  color: #00bfff;
+}
+
+.fileName {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #f2f2f2;
+}
+
+.fileMeta {
+  font-size: 12px;
+  color: #999;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.fileActions {
+  display: flex;
+  justify-content: end;
+  gap: 12px;
+  font-size: 14px;
+  color: #888;
+  position: relative;
+  width: 100%;
+}
+
+.fileActions svg {
+  align-self: self-end;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.fileActions svg:hover {
+  color: #00bfff;
+}
+
+/* Responsive */
+
+@media (max-width: 500px) {
+  .container {
+    all: unset;
+  }
+  .myFilesWrapper {
+    border: 0px;
+    border-radius: 0px;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .myFilesPage {
+    padding: 10px;
+  }
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .filesGrid {
+    display: flex;
+    flex-wrap: wrap;
+    /* height: 40%; */
+  }
+
+  .fileCard {
+    width: 45%;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

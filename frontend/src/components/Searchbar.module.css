@@ -1,0 +1,14 @@
+.searchbar-container {
+  min-height: 100%;
+  width: calc(100% - 251px);
+  background-color: hsl(222deg 26% 7%);
+  border: 1px solid hsl(213deg 20% 11%);
+  border-top: 0px;
+  /* border-radius: 10px; */
+}
+
+@media screen and (max-width: 970px) {
+  .searchbar-container {
+    width: calc(100% - 61px);
+  }
+}

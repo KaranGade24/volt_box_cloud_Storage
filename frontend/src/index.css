@@ -1,0 +1,29 @@
+:root {
+  --bg-dark: #0b0d17;
+  --bg-darker: #12151f;
+  --card-bg: #1e212b;
+  --primary: #00bfff;
+  --secondary-bg: #1a1d26;
+  --text-primary: #e0e0e0;
+  --text-secondary: #888;
+  --border: #222531;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  height: 100vh;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
