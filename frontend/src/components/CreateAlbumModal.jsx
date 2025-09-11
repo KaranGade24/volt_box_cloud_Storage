@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import styles from "./CreateAlbumModal.module.css";
-import { FaTimes, FaCloudUploadAlt } from "react-icons/fa";
+import { FaTimes, FaCloudUploadAlt, FaSpinner } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 import { VoltboxSymbol } from "./VotBoxLogo";
 import { v4 as uniqueIdGenerator } from "uuid";
 import FileContext from "../store/files/FileContext";
 import ChooseFromExistingModal from "./ChooseFromExistingModal";
 import AlbumContext from "../store/Albums/AlbumContex";
-import { formatFileSize } from "../store/files/FileReducer";
+import axios from "axios";
 
 export default function CreateAlbumModal({ onClose }) {
   const [uploadFiles, setUploadFiles] = useState([]);
@@ -19,27 +19,106 @@ export default function CreateAlbumModal({ onClose }) {
   const [selectedFileIds, setSelectedFileIds] = useState([]);
   const [existingFiles, setExistingFiles] = useState([]);
   const { files } = useContext(FileContext);
-  const { AlbumDispatch } = useContext(AlbumContext);
+  const { AlbumDispatch, Albums, setLoadDashBoardStatus } =
+    useContext(AlbumContext);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     setExistingFiles(files);
   }, [files]);
 
-  const handleCoverPhotoUpload = (e) => {
- 
-    if (formattedFiles.length > 0) {
-      AlbumDispatch({
-        type: "CREATE_ALBUM",
-        payload: {
+  const handleCoverPhotoUpload = (coverPhoto) => {
+    setCoverPhoto(coverPhoto);
+  };
+
+  const handleCreateAlbumClick = async () => {
+    // Check if album name is provided
+    if (!albumName) {
+      alert("Album name is required");
+      return;
+    }
+
+    if (Albums.find((album) => album.name === albumName))
+      return alert("Album name already exists use another name");
+
+    if (uploadFiles.length === 0 && selectedFileIds.length === 0) {
+      alert("Please select or upload at least one file");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // Create FormData (for file uploads)
+      const formData = new FormData();
+
+      // Case 1: Upload new files
+      if (uploadFiles.length > 0) {
+        uploadFiles.forEach((file) => {
+          formData.append("files", file); // backend => req.files
+        });
+      }
+
+      // Case 2: Existing files
+      if (selectedFileIds.length > 0) {
+        selectedFileIds.forEach((id) => {
+          formData.append("existingFileIds[]", id); // backend => req.body.existingFileIds
+        });
+      }
+
+      // Album metadata
+      formData.append("name", albumName);
+      formData.append("accessControl", visibility); // "private" | "public" | "shared"
+      formData.append("tags", selectedTags.join(","));
+
+      // Cover image (single file)
+      if (coverPhoto) {
+        formData.append("coverImage", coverPhoto); // backend => req.file
+      }
+
+      // Send request
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/album`,
+        formData,
+        { withCredentials: true }
+      );
+
+      if (res.status === 201) {
+        console.log(
+          `Album created with ID: ${res.data.album._id} files that attached: ${res.data.files}`,
+          res
+        );
+        // Dispatch with backend response
+        const payload = {
           id: uniqueIdGenerator(),
-          name: albumName,
-          cover: coverPhoto,
-          tags: selectedTags,
-          visibility: visibility,
-          files: formattedFiles,
-        },
-      });
-    } else {
-      alert("Please select or upload at least one file.");
+          _id: res?.data?.album?._id,
+          name: res?.data?.album?.name ? res?.data?.album?.name : albumName,
+          cover: res?.data?.album?.coverImage
+            ? res?.data?.album?.coverImage?.url
+            : null,
+          tags: res?.data?.album?.tags ? res?.data?.album?.tags : [],
+          visibility: res?.data?.album?.accessControl || "private",
+          files: res?.data?.files || [],
+          originalFiles: res?.data?.files || [],
+        };
+        AlbumDispatch({
+          type: "CREATE_ALBUM",
+          payload: payload, // contains _id, name, etc.
+        });
+
+        onClose();
+        setLoadDashBoardStatus((pre) => pre + 1);
+      }
+    } catch (error) {
+      console.error("Error creating album:", error);
+      alert("Failed to create album");
+    } finally {
+      setUploadFiles([]);
+      setCoverPhoto(null);
+      setSelectedTags([]);
+      setAlbumName("");
+      setVisibility("Private");
+      setSelectedFileIds([]);
+      setLoading(false);
     }
   };
 
@@ -94,7 +173,10 @@ export default function CreateAlbumModal({ onClose }) {
                   type="file"
                   accept="image/*"
                   style={{ display: "none" }}
-                  onChange={handleCoverPhotoUpload}
+                  onChange={(e) => {
+                    handleCoverPhotoUpload(e.target.files[0]);
+                    console.log(coverPhoto);
+                  }}
                 />
               </label>
             </div>
@@ -128,9 +210,9 @@ export default function CreateAlbumModal({ onClose }) {
                     }}
                   >
                     {existingFiles
-                      .filter((file) => selectedFileIds.includes(file.id))
+                      .filter((file) => selectedFileIds.includes(file._id))
                       .map((file) => (
-                        <li key={file.id}>
+                        <li key={file._id}>
                           {file.name} — {file.size}
                         </li>
                       ))}
@@ -215,8 +297,8 @@ export default function CreateAlbumModal({ onClose }) {
               />
 
               <div className={styles.tags}>
-                {selectedTags.map((tag) => (
-                  <span key={tag} className={styles.tag}>
+                {selectedTags.map((tag, index) => (
+                  <span key={`${index}${tag}`} className={styles.tag}>
                     {tag}
                     <span
                       className={styles.closeTag}
@@ -240,10 +322,14 @@ export default function CreateAlbumModal({ onClose }) {
           </button>
           <button
             className={albumName ? styles.createBtn : styles.disabledBtn}
-            disabled={!albumName}
-            onClick={() => handleCreateAlbumClick(files)}
+            disabled={!albumName || loading}
+            onClick={() => handleCreateAlbumClick()}
           >
-            Create Album
+            {loading ? (
+              <span>Creating Album...</span>
+            ) : (
+              <span>Create Album</span>
+            )}
           </button>
         </div>
       </div>

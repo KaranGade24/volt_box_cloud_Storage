@@ -5,13 +5,14 @@ import styles from "../MyFiles/MyFiles.module.css";
 import FileCard from "../../components/FileCard";
 import FileFilters from "../../components/FileFilters";
 import FilePreviewModal from "../../components/FilePreviewModal";
+import { FaSpinner } from "react-icons/fa";
+import FileContext from "../../store/files/FileContext";
 
 function AlbumPage() {
   const { albumId } = useParams();
   const navigate = useNavigate();
-  console.log({ albumId });
-  const { Albums, AlbumDispatch } = useContext(AlbumContext);
-  console.log({ Albums });
+  const { Albums, AlbumDispatch, loading } = useContext(AlbumContext);
+  const { fetchFiles, albumHasMore } = useContext(FileContext);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
@@ -20,9 +21,10 @@ function AlbumPage() {
   const [sortValue, setSortValue] = useState("");
   const [filterOption, setFilterOption] = useState("-- Filter By --");
   const menuRef = useRef(null);
+  const [loagindMore, setLoagindMore] = useState(false);
+  const [page, setPage] = useState(2);
 
-  const album = Albums.find((album) => String(album.id) === String(albumId));
-  console.log({ album });
+  const album = Albums.find((album) => String(album._id) === String(albumId));
   useEffect(() => {
     // redirect if album not found
     if (!album) {
@@ -50,6 +52,7 @@ function AlbumPage() {
     setSortValue(val);
 
     if (val === "Clear filter") {
+      console.log("Clear filter");
       setFilterOption("-- Filter By --");
       AlbumDispatch({
         type: "SORT_FILES",
@@ -74,9 +77,43 @@ function AlbumPage() {
     });
   };
 
+  const handleFetchAlbums = async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    try {
+      setLoagindMore(true);
+      const data = await fetchFiles(page, 10, signal, setLoagindMore, albumId);
+      console.log("data:from albumpage ", data);
+      AlbumDispatch({
+        type: "ADD_fILES_TO_ALBUM",
+        payload: { files: data.files, AlbumId: albumId },
+      });
+      if (albumHasMore.current) {
+        setPage((prev) => prev + 1);
+      }
+      console.log("data: ", data);
+    } catch (err) {
+      alert("Something went wrong");
+      console.log(err);
+    } finally {
+      controller.abort();
+      setLoagindMore(false);
+    }
+  };
+
   if (!album) return null;
 
   const files = album.files || [];
+
+  console.log(
+    "albumHasMore.current: ",
+    albumHasMore.current,
+    "loagindMore: ",
+    loagindMore,
+    "page: ",
+    page
+  );
 
   return (
     <div className={styles.myFilesWrapper}>
@@ -97,6 +134,7 @@ function AlbumPage() {
           sortValue={sortValue}
           filterOption={filterOption}
           title={album.name}
+          fromAlbumPage={1}
         />
 
         <div className={styles.filesGrid}>
@@ -111,7 +149,7 @@ function AlbumPage() {
           {files.length > 0 ? (
             files.map((file, index) => (
               <FileCard
-                key={file.id}
+                key={index}
                 file={file}
                 index={index}
                 menuRef={menuRef}
@@ -132,6 +170,30 @@ function AlbumPage() {
               No files in this album.
             </div>
           )}
+
+          <button disabled={!albumHasMore.current} onClick={handleFetchAlbums}>
+            {loading || loagindMore ? (
+              <>
+                Loading files... <FaSpinner speed={1} />{" "}
+              </>
+            ) : albumHasMore.current ? (
+              "Load More"
+            ) : null}
+            {!albumHasMore.current && (
+              <h4
+                style={{
+                  color: "#aaa",
+                  wordBreak: "break-all",
+                  fontSize: "20px",
+                  textAlign: "center",
+                  fontWeight: "700",
+                }}
+              >
+                {" "}
+                No more files to load{" "}
+              </h4>
+            )}
+          </button>
         </div>
       </div>
     </div>

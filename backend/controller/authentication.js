@@ -57,7 +57,9 @@ export const signup = async (req, res) => {
     });
 
     // Send success response
-    res.status(201).send({ message: "User created successfully", token }); // Use 201 Created for successful resource creation
+    res
+      .status(201)
+      .send({ message: "User created successfully", token, user: newUser }); // Use 201 Created for successful resource creation
   } catch (error) {
     console.error("Error during signup:", error); // Log the full error for debugging
 
@@ -110,10 +112,28 @@ export const login = async (req, res) => {
     // Send success response
     res.status(200).json({
       message: "Login successful",
-      user: { id: user._id, email: user.email },
+      user,
     });
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "An error occurred during login." });
+  }
+};
+
+export const logout = async (req, res) => {
+  try {
+    // If using JWT → clear token from cookies
+    res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
+
+    // If using session → destroy session
+    if (req.session) {
+      req.session.destroy(() => {
+        res.status(200).json({ message: "Logged out successfully" });
+      });
+    } else {
+      res.status(200).json({ message: "Logged out successfully" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Logout failed" });
   }
 };

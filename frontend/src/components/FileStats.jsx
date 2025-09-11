@@ -7,46 +7,30 @@ import {
   FaFileArchive,
 } from "react-icons/fa";
 
-function FileStats() {
-  const stats = [
-    {
-      icon: <FaFileAlt />,
-      label: "Files",
-      value: "1.2 GB",
-      active: true,
-    },
-    {
-      icon: <FaFileImage />,
-      label: "Images",
-      value: "3.2 GB",
-      active: true,
-    },
-    {
-      icon: <FaFileVideo />,
-      label: "Videos",
-      value: "820 MB",
-      active: true,
-    },
-    {
-      icon: <FaFileArchive />,
-      label: "Other",
-      value: "480 MB",
-      active: true,
-    },
-  ];
+function FileStats({ dashboardData }) {
+  // Map type → icon + label
+  const iconMap = {
+    file: { icon: <FaFileAlt />, label: "Files" },
+    image: { icon: <FaFileImage />, label: "Images" },
+    video: { icon: <FaFileVideo />, label: "Videos" },
+    other: { icon: <FaFileArchive />, label: "Other" },
+  };
 
   return (
     <div className={styles.container}>
-      {stats.map((stat, index) => (
-        <div
-          key={index}
-          className={`${styles.statCard} ${stat.active ? styles.active : ""}`}
-        >
-          <div className={styles.icon}>{stat.icon}</div>
-          <div className={styles.value}>{stat.value}</div>
-          <div className={styles.label}>{stat.label}</div>
-        </div>
-      ))}
+      {dashboardData?.stats?.map((stat, index) => {
+        const mapped = iconMap[stat.type] || {
+          icon: <FaFileAlt />,
+          label: stat.type,
+        };
+        return (
+          <div key={index} className={`${styles.statCard} ${styles.active}`}>
+            <div className={styles.icon}>{mapped.icon}</div>
+            <div className={styles.value}>{stat.value}</div>
+            <div className={styles.label}>{mapped.label}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }

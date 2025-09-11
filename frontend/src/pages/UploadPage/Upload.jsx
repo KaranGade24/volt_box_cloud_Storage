@@ -7,86 +7,204 @@ import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 import { RiFileImageFill, RiFilePdfFill, RiVideoFill } from "react-icons/ri";
 import FileContext from "../../store/files/FileContext";
 import { toast } from "react-toastify";
+import AlbumContext from "../../store/Albums/AlbumContex";
 
 export default function Upload() {
   const [files, setFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
   const { fileActionDispatch } = useContext(FileContext);
+  const { setLoadDashBoardStatus } = useContext(AlbumContext);
+
+  // const uploadFile = (f, index) => {
+  //   const controller = new AbortController();
+  //   const signal = controller.signal;
+
+  //   const formData = new FormData();
+  //   formData.append("files", f.file);
+
+  //   // Update controller in file state
+  //   const updatedFiles = [...files];
+  //   updatedFiles[index].controller = controller;
+  //   updatedFiles[index].status = "uploading";
+  //   setFiles(updatedFiles);
+
+  //   fetch(`${import.meta.env.VITE_API_URL}/file`, {
+  //     method: "POST",
+  //     body: formData,
+  //     signal,
+  //     credentials: "include",
+  //   })
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       updatedFiles[index].status = "success";
+  //       updatedFiles[index].uploaded = parseFloat(updatedFiles[index].size); // Full uploaded
+  //       setFiles([...updatedFiles]);
+  //       console.log(data.files);
+  //       fileActionDispatch({
+  //         type: "ADD_FILE",
+  //         payload: data.files,
+  //       });
+
+  //       setLoadDashBoardStatus((pre) => pre + 1);
+  //     })
+  //     .catch((err) => {
+  //       if (err.name === "AbortError") {
+  //         updatedFiles[index].status = "paused"; // Can resume
+  //       } else {
+  //         updatedFiles[index].status = "failed";
+  //       }
+  //       setFiles([...updatedFiles]);
+  //     });
+  // };
 
   const uploadFile = (f, index) => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
+    const xhr = new XMLHttpRequest();
     const formData = new FormData();
     formData.append("files", f.file);
 
-    // Update controller in file state
-    const updatedFiles = [...files];
-    updatedFiles[index].controller = controller;
-    updatedFiles[index].status = "uploading";
-    setFiles(updatedFiles);
+    // Set status immediately (use functional set to avoid stale closures)
+    setFiles((prev) => {
+      const copy = [...(prev || [])];
+      copy[index] = {
+        ...copy[index],
+        status: "uploading",
+        uploaded: 0,
+        percent: 0,
+        controller: xhr,
+      };
+      return copy;
+    });
 
-    fetch(`${import.meta.env.VITE_API_URL}/file`, {
-      method: "POST",
-      body: formData,
-      signal,
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        updatedFiles[index].status = "success";
-        updatedFiles[index].uploaded = parseFloat(updatedFiles[index].size); // Full uploaded
-        setFiles([...updatedFiles]);
-        console.log(data.files);
-        fileActionDispatch({
-          type: "ADD_FILE",
-          payload: data.files,
-        });
-      })
-      .catch((err) => {
-        if (err.name === "AbortError") {
-          updatedFiles[index].status = "paused"; // Can resume
-        } else {
-          updatedFiles[index].status = "failed";
-        }
-        setFiles([...updatedFiles]);
+    xhr.upload.onprogress = (e) => {
+      if (!e.lengthComputable) return;
+      const uploadedBytes = e.loaded;
+      const totalBytes = e.total;
+      const uploadedMB = uploadedBytes / 1048576; // MB
+      const percent = Math.min(100, (uploadedBytes / totalBytes) * 100);
+
+      setFiles((prev) => {
+        const copy = [...(prev || [])];
+        if (!copy[index]) return copy;
+        copy[index] = {
+          ...copy[index],
+          uploaded: Number(uploadedMB.toFixed(2)),
+          percent: Number(percent.toFixed(2)),
+          status: "uploading",
+          controller: xhr,
+        };
+        return copy;
       });
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        setFiles((prev) => {
+          const copy = [...(prev || [])];
+          if (!copy[index]) return copy;
+          copy[index] = {
+            ...copy[index],
+            status: "success",
+            uploaded: Number(copy[index].size), // full size in MB (display)
+            percent: 100,
+          };
+          return copy;
+        });
+
+        fileActionDispatch({ type: "ADD_FILE", payload: data.files });
+        setLoadDashBoardStatus((pre) => pre + 1);
+      } else {
+        setFiles((prev) => {
+          const copy = [...(prev || [])];
+          if (!copy[index]) return copy;
+          copy[index] = { ...copy[index], status: "failed" };
+          return copy;
+        });
+      }
+    };
+
+    xhr.onerror = () => {
+      setFiles((prev) => {
+        const copy = [...(prev || [])];
+        if (!copy[index]) return copy;
+        copy[index] = { ...copy[index], status: "failed" };
+        return copy;
+      });
+    };
+
+    xhr.onabort = () => {
+      // mark paused (or cancelled depending on UI)
+      setFiles((prev) => {
+        const copy = [...(prev || [])];
+        if (!copy[index]) return copy;
+        copy[index] = { ...copy[index], status: "paused" };
+        return copy;
+      });
+    };
+
+    xhr.open("POST", `${import.meta.env.VITE_API_URL}/file`, true);
+    xhr.withCredentials = true;
+    xhr.send(formData);
   };
+
+  // const handleFileSelect = (e) => {
+  //   e.preventDefault();
+  //   console.log("in select");
+  //   console.log({ files });
+  //   if (files.length) {
+  //     console.log("in if");
+  //     toast.info("Clear all files first", {
+  //       position: "top-right",
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: "dark",
+  //     });
+  //     return;
+  //   }
+  //   console.log("all files null");
+  //   setFiles(null);
+
+  //   const fileData = Array.from(e.target.files).map((file) => ({
+  //     file,
+  //     name: file.name,
+  //     size: (file.size / 1048576).toFixed(2), // MB
+  //     uploaded: 0,
+  //     status: "pending", // 'uploading' | 'paused' | 'success' | 'failed' | 'cancelled'
+  //     controller: null,
+  //     preview: file.type.startsWith("image/")
+  //       ? URL.createObjectURL(file)
+  //       : null,
+  //   }));
+  //   console.log("all file set:", fileData);
+  //   setFiles(fileData);
+  // };
 
   const handleFileSelect = (e) => {
     e.preventDefault();
-    console.log("in select");
-    console.log({ files });
-    if (files.length) {
-      console.log("in if");
-      toast.info("Clear all files first", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+    if (files && files.length) {
+      toast.info("Clear all files first", { theme: "dark" });
       return;
     }
-    console.log("all files null");
-    setFiles(null);
 
     const fileData = Array.from(e.target.files).map((file) => ({
       file,
       name: file.name,
-      size: (file.size / 1048576).toFixed(2), // MB
-      uploaded: 0,
-      status: "pending", // 'uploading' | 'paused' | 'success' | 'failed' | 'cancelled'
+      size: (file.size / 1048576).toFixed(2), // MB string for display
+      sizeBytes: file.size, // keep raw bytes for progress math
+      uploaded: 0, // MB
+      percent: 0, // percent 0-100
+      status: "pending",
       controller: null,
       preview: file.type.startsWith("image/")
         ? URL.createObjectURL(file)
         : null,
     }));
-    console.log("all file set:", fileData);
+
     setFiles(fileData);
   };
 
@@ -124,36 +242,70 @@ export default function Upload() {
     setFiles(fileData);
   };
 
-  const resumeUpload = (index) => {
-    const f = files[index];
-    if (f.status === "paused") {
-      uploadFile(f, index);
-    }
-  };
+  // const resumeUpload = (index) => {
+  //   const f = files[index];
+  //   if (f.status === "paused") {
+  //     uploadFile(f, index);
+  //   }
+  // };
+
+  // const pauseUpload = (index) => {
+  //   const f = files[index];
+  //   if (f.controller) {
+  //     f.controller.abort();
+  //   }
+  // };
+
+  // const cancelUpload = (index) => {
+  //   setFiles((prev) => {
+  //     const updated = [...prev];
+  //     const f = updated[index];
+  //     if (f.controller) f.controller.abort();
+  //     updated[index].status = "cancelled";
+  //     return updated;
+  //   });
+  // };
 
   const pauseUpload = (index) => {
     const f = files[index];
     if (f.controller) {
-      f.controller.abort();
+      f.controller.abort(); // abort current upload
+      const updated = [...files];
+      updated[index].status = "paused";
+      setFiles(updated);
+    }
+  };
+
+  const resumeUpload = (index) => {
+    const f = files[index];
+    if (f.status === "paused") {
+      uploadFile(f, index); // restart
     }
   };
 
   const cancelUpload = (index) => {
-    setFiles((prev) => {
-      const updated = [...prev];
-      const f = updated[index];
-      if (f.controller) f.controller.abort();
-      updated[index].status = "cancelled";
-      return updated;
-    });
+    const updated = [...files];
+    if (updated[index].controller) updated[index].controller.abort();
+    updated[index].status = "cancelled";
+    setFiles(updated);
   };
 
+  // const cancelAllUpload = () => {
+  //   files.forEach((f) => {
+  //     if (f.controller) f.controller.abort();
+  //   });
+  //   console.log("all file clear");
+  //   setFiles((prev) => (prev = []));
+  // };
+
   const cancelAllUpload = () => {
+    if (!files || files.length === 0) return;
     files.forEach((f) => {
-      if (f.controller) f.controller.abort();
+      if (f.controller && typeof f.controller.abort === "function") {
+        f.controller.abort();
+      }
     });
-    console.log("all file clear");
-    setFiles((prev) => (prev = []));
+    setFiles([]); // clear list
   };
 
   const removeFile = (i) => {
@@ -244,7 +396,7 @@ export default function Upload() {
               Auto-tag files
             </label>
           </div>
-          <button
+          {/* <button
             className="btn btn-primary w-100 mb-2"
             onClick={() => {
               if (files.length > 0) {
@@ -258,7 +410,23 @@ export default function Upload() {
           >
             {" "}
             Upload Now
+          </button> */}
+
+          <button
+            className="btn btn-primary w-100 mb-2"
+            onClick={() => {
+              if (files.length > 0) {
+                files.forEach((f, i) => {
+                  if (f.status === "pending") {
+                    uploadFile(f, i);
+                  }
+                });
+              }
+            }}
+          >
+            Upload Now
           </button>
+
           <button
             className="btn btn-outline-secondary w-100"
             onClick={cancelAllUpload}
@@ -340,12 +508,17 @@ export default function Upload() {
                               ? styles.failed
                               : ""
                           }`}
-                          style={{ width: `${pct}%` }}
+                          // style={{ width: `${pct}%` }}
+                          style={{ width: `${f.percent ?? 0}%` }}
                         />
                       </div>
 
-                      <small className="text-muted">
+                      {/* <small className="text-muted">
                         {f.uploaded.toFixed(2)} MB / {f.size}
+                      </small> */}
+
+                      <small className="text-muted">
+                        {(f.uploaded ?? 0).toFixed(2)} MB / {f.size} MB
                       </small>
                     </div>
 

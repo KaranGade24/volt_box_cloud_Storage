@@ -12,22 +12,23 @@ export default function ChooseFromExistingModal({
 
   const toggleFileSelect = (file) => {
     setSelectedIds((prevSelected) =>
-      prevSelected.includes(file.id)
-        ? prevSelected.filter((id) => id !== file.id)
-        : [...prevSelected, file.id]
+      prevSelected.includes(file._id)
+        ? prevSelected.filter((id) => id !== file._id)
+        : [...prevSelected, file._id]
     );
   };
 
+  console.log({ files });
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <h3>Select Files from Existing</h3>
         <div className={styles.fileGrid}>
-          {files.map((file) => (
+          {files.map((file, index) => (
             <ChooseFromExistingCard
-              key={file.id}
+              key={index}
               file={file}
-              isSelected={selectedIds.includes(file.id)}
+              isSelected={selectedIds.includes(file._id)}
               onToggleSelect={toggleFileSelect}
             />
           ))}

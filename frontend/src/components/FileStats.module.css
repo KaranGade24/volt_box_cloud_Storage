@@ -14,7 +14,7 @@
   padding-left: 70px;
 }
 
-.container::-webkit-scrollbar {
+/* .container::-webkit-scrollbar {
   height: 8px;
 }
 .container::-webkit-scrollbar-track {
@@ -23,7 +23,7 @@
 .container::-webkit-scrollbar-thumb {
   background: #333;
   border-radius: 4px;
-}
+} */
 
 .statCard {
   background-color: hsl(220, 20%, 10%);

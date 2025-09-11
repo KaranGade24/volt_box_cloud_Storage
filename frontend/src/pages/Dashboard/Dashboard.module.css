@@ -48,7 +48,7 @@
   min-height: 0;
 }
 
-.storageContainer::-webkit-scrollbar {
+/* .storageContainer::-webkit-scrollbar {
   width: 6px;
 }
 .storageContainer::-webkit-scrollbar-track {
@@ -58,7 +58,7 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
-
+ */
 /* Top two cards */
 .topSection {
   display: flex;

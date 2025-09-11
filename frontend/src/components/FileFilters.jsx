@@ -9,6 +9,7 @@ function FileFilters({
   sortValue,
   filterOption,
   title,
+  fromAlbumPage = null,
 }) {
   const navigate = useNavigate();
   return (
@@ -24,12 +25,14 @@ function FileFilters({
               placeholder="Search files..."
             />
           </div>
-          <button
-            onClick={() => navigate("/upload")}
-            className={styles.uploadBtn}
-          >
-            Upload New File
-          </button>
+          {fromAlbumPage === null && (
+            <button
+              onClick={() => navigate("/upload")}
+              className={styles.uploadBtn}
+            >
+              Upload New File
+            </button>
+          )}
         </div>
       </div>
       <div className={styles.filters}>

@@ -4,12 +4,39 @@ import Sidebar from "../../components/Sidebar";
 import CreateAlbumModal from "../../components/CreateAlbumModal";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import AlbumContext from "../../store/Albums/AlbumContex";
+import { FaSpinner } from "react-icons/fa";
+import { BsSignal } from "react-icons/bs";
 
 export default function AlbumsPage() {
   const navigate = useNavigate();
-  const { Albums, AlbumDispatch } = useContext(AlbumContext);
+  const {
+    Albums,
+    loading,
+    fetchAlbums,
+    hasMore: albumHasMore,
+  } = useContext(AlbumContext);
   const { showCreateModal, setShowCreateModal } = useOutletContext();
+  const [loagindMore, setLoagindMore] = useState(false);
+  const [page, setPage] = useState(2);
 
+  const handleFetchAlbums = async () => {
+    const contorller = new AbortController();
+    const Signal = contorller.signal;
+    try {
+      setLoagindMore(true);
+      const data = await fetchAlbums(page, 5, Signal, setLoagindMore);
+
+      if (albumHasMore) {
+        setPage(data?.page);
+      }
+    } catch (err) {
+      alert("Error fetching albums");
+      console.log(err);
+    } finally {
+      setLoagindMore(false);
+      contorller.abort();
+    }
+  };
   return (
     <div className={styles.page}>
       {/* <Sidebar showCreateModal={showCreateModal} /> */}
@@ -28,13 +55,13 @@ export default function AlbumsPage() {
           {Albums.map((album, index) => (
             <div
               onClick={() => {
-                navigate(`/album/${album.id}`);
+                navigate(`/album/${album._id}`);
               }}
-              key={album.id}
+              key={album._id + index}
               className={styles.albumCard}
             >
               <img
-                src={album.cover}
+                src={album.coverImage?.url}
                 alt={album.name}
                 className={styles.albumCover}
               />
@@ -48,13 +75,58 @@ export default function AlbumsPage() {
               </div>
               <span
                 className={
-                  album.visibility === "Public" ? styles.public : styles.private
+                  album?.accessControl === "Public"
+                    ? styles.public
+                    : styles.private
                 }
               >
-                {album.visibility}
+                {album?.accessControl}
               </span>
             </div>
           ))}
+          <br />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "20px",
+            position: "relative",
+            bottom: "20px",
+            alignSelf: "center",
+            padding: "10px 20px",
+          }}
+        >
+          <button
+            style={{
+              padding: "10px 20px",
+            }}
+            disabled={!albumHasMore}
+            onClick={handleFetchAlbums}
+          >
+            {loading || loagindMore ? (
+              <>
+                Loading albums... <FaSpinner speed={1} />{" "}
+              </>
+            ) : albumHasMore ? (
+              "Load More"
+            ) : null}
+            {!albumHasMore && (
+              <h4
+                style={{
+                  color: "#aaa",
+                  wordBreak: "break-all",
+                  fontSize: "20px",
+                  textAlign: "center",
+                  fontWeight: "700",
+                }}
+              >
+                {" "}
+                No more albums to load{" "}
+              </h4>
+            )}
+          </button>
         </div>
 
         {showCreateModal && (

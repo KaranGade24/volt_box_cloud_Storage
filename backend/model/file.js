@@ -42,7 +42,7 @@ const fileSchema = new mongoose.Schema(
     },
     albumId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Album", // if you're using album-based categorization
+      ref: "Album", // for album-based categorization
       default: null,
     },
   },

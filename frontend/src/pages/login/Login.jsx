@@ -49,6 +49,7 @@ export default function Login() {
           progress: undefined,
           theme: "dark",
         });
+        localStorage.setItem("user", JSON.stringify(data));
         navigate("/dashboard");
       } else {
         const err = await res.json();

@@ -1,99 +1,134 @@
 import { parseFileSize } from "../files/FileReducer";
 
-const AlbumsData = [
-  {
-    id: 1,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/2/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 3,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/5/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 2,
-    name: "Work Reports",
-    cover: "https://picsum.photos/id/125/200",
-    tags: ["Work", "PDF"],
-    visibility: "Private",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 4,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/175/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 5,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/195/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Private",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 6,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/425/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 7,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/198/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-  {
-    id: 8,
-    name: "Travel 2025",
-    cover: "https://picsum.photos/id/178/200",
-    tags: ["Travel", "Nature"],
-    visibility: "Public",
-    files: [],
-    originalFiles: [],
-  },
-];
+// const AlbumsData = [
+//   {
+//     id: 1,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/2/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 3,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/5/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 2,
+//     name: "Work Reports",
+//     cover: "https://picsum.photos/id/125/200",
+//     tags: ["Work", "PDF"],
+//     visibility: "Private",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 4,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/175/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 5,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/195/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Private",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 6,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/425/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 7,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/198/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+//   {
+//     id: 8,
+//     name: "Travel 2025",
+//     cover: "https://picsum.photos/id/178/200",
+//     tags: ["Travel", "Nature"],
+//     visibility: "Public",
+//     files: [],
+//     originalFiles: [],
+//   },
+// ];
+
 export const INITIAL_STATE = {
-  Albums: AlbumsData,
+  Albums: [],
   originalFiles: [],
 };
 
 function AlbumReducer(state, action) {
   switch (action.type) {
-    case "CREATE_ALBUM":
-      console.log(action.payload);
+    case "INITIALIZE_ALBUMS": {
+      console.log("action.payload initilize: ", action.payload);
       return {
         ...state,
-        Albums: [action.payload, ...state.Albums],
+        Albums: action.payload.Albums,
       };
+    }
+    case "ADD_ALBUMS":
+      console.log("action.payload", action.payload);
+      return {
+        ...state,
+        Albums: [...state.Albums, ...action.payload],
+      };
+
+    case "CREATE_ALBUM":
+      return {
+        ...state,
+        Albums: [...state.Albums, action.payload],
+      };
+    case "ADD_FILES_TO_ALBUM": {
+      const { files, AlbumId } = action.payload;
+      return {
+        ...state,
+        Albums: state.Albums.map((album) =>
+          album._id === AlbumId
+            ? {
+                ...album,
+                files: [
+                  ...(album.files || []),
+                  ...files.filter(
+                    (newFile) =>
+                      !(album.files || []).some((f) => f._id === newFile._id)
+                  ),
+                ],
+              }
+            : album
+        ),
+      };
+    }
+
     // 🔁 Rename a file inside a specific album
     case "RENAME_FILE": {
       const { fileId, newName, AlbumId } = action.payload;
       return {
         ...state,
         Albums: state.Albums.map((album) =>
-          album.id === +AlbumId
+          album._id == AlbumId
             ? {
                 ...album,
                 files: album.files.map((file) =>
@@ -110,7 +145,7 @@ function AlbumReducer(state, action) {
       return {
         ...state,
         Albums: state.Albums.map((album) =>
-          album.id === +AlbumId
+          album._id == AlbumId
             ? {
                 ...album,
                 files: album.files.filter((file) => file.id !== fileId),
@@ -122,14 +157,15 @@ function AlbumReducer(state, action) {
     // 🔍 Search by file name (case-insensitive)
     case "SEARCH_FILES": {
       const { searchTerm, AlbumId } = action.payload;
+
       if (searchTerm === "") {
         return {
           ...state,
           Albums: state.Albums.map((album) =>
-            album.id === +AlbumId
+            album._id == AlbumId
               ? {
                   ...album,
-                  files: [...album.originalFiles],
+                  files: album.originalFiles,
                 }
               : album
           ),
@@ -138,10 +174,10 @@ function AlbumReducer(state, action) {
       return {
         ...state,
         Albums: state.Albums.map((album) =>
-          album.id === +AlbumId
+          album._id == AlbumId
             ? {
                 ...album,
-                files: album.originalFiles.filter((file) =>
+                files: album.originalFiles?.filter((file) =>
                   file.name.toLowerCase().includes(searchTerm.toLowerCase())
                 ),
               }
@@ -157,6 +193,7 @@ function AlbumReducer(state, action) {
         switch (sortType) {
           case "newest":
           case "date":
+          case "CLEAR_FILTER":
             return [...files].sort(
               (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             );
@@ -170,20 +207,6 @@ function AlbumReducer(state, action) {
             return [...files].sort(
               (a, b) => parseFileSize(b.size) - parseFileSize(a.size)
             );
-          case "CLEAR_FILTER": {
-            const { AlbumId } = action.payload;
-            return {
-              ...state,
-              Albums: state.Albums.map((album) =>
-                album.id === +AlbumId
-                  ? {
-                      ...album,
-                      files: [...album.originalFiles],
-                    }
-                  : album
-              ),
-            };
-          }
 
           default:
             return files;
@@ -193,7 +216,7 @@ function AlbumReducer(state, action) {
       return {
         ...state,
         Albums: state.Albums.map((album) =>
-          album.id === +AlbumId
+          album._id == AlbumId
             ? {
                 ...album,
                 files: sortFiles(album.files),

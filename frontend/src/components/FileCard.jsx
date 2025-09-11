@@ -66,6 +66,7 @@ function FileCard({
         setPreviewIndex(index);
       }}
       key={file._id}
+      tabIndex={0}
       className={styles.fileCard}
     >
       <div

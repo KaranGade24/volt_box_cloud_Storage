@@ -4,7 +4,7 @@ import { MdDashboard } from "react-icons/md";
 import { FiUpload } from "react-icons/fi";
 import { VscFiles } from "react-icons/vsc";
 import { BsCollection } from "react-icons/bs";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUser, FaUserCircle } from "react-icons/fa";
 import { IoSettingsSharp } from "react-icons/io5";
 import VotBoxLogo, { VoltboxSymbol } from "./VotBoxLogo";
 import { NavLink } from "react-router-dom";
@@ -103,11 +103,13 @@ function Sidebar({ showCreateModal }) {
         </NavLink> */}
 
         <NavLink
-          to="/settings"
+          // to="/settings"
+          to="/profile"
           className={({ isActive }) => (isActive ? styles.active : "")}
         >
           <p data-tooltip-id="tooltip" data-tooltip-content="Settings">
-            <IoSettingsSharp className={styles["sidebar-icon"]} />
+            {/* <IoSettingsSharp className={styles["sidebar-icon"]} /> */}
+            <FaUser className={styles["sidebar-icon"]} />
             <span>Settings</span>
           </p>
         </NavLink>

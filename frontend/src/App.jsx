@@ -5,13 +5,16 @@ import "./index.css";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AlbumContext from "./store/Albums/AlbumContex";
 
 function App() {
   const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const { Albums, AlbumDispatch } = useContext(AlbumContext);
+  const [user, setUser] = useState(null);
 
   // useEffect(() => {
   //   const protect = async () => {
@@ -31,6 +34,28 @@ function App() {
   //   };
   //   protect();
   // }, [navigate]);
+
+  useEffect(() => {
+    const checkUser = () => {
+      const u = localStorage.getItem("user");
+      if (u) {
+        setUser(JSON.parse(u));
+      } else {
+        setUser(null);
+        navigate("/login");
+      }
+    };
+
+    // run once on mount
+    checkUser();
+
+    // listen for storage changes
+    window.addEventListener("storage", checkUser);
+
+    return () => {
+      window.removeEventListener("storage", checkUser);
+    };
+  }, [navigate]);
 
   return (
     <>

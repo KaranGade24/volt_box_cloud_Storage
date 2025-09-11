@@ -27,3 +27,32 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* ===== Global Scrollbar Styling ===== */
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px; /* rounded track */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #1862cb; /* your blue */
+  border-radius: 10px; /* rounded thumb */
+  border: 2px solid #f1f1f1; /* space between track and thumb */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #1451a3; /* darker on hover */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1862cb #f1f1f1; /* thumb | track */
+}

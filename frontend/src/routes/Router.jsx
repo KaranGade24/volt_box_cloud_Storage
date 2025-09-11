@@ -9,6 +9,7 @@ import Login from "../pages/login/Login";
 import Signup from "../pages/signup/Signup";
 import AlbumPage from "../pages/AlbumFiles/AlbumPage";
 import NotFoundPage from "../components/NotFoundPage";
+import UserProfile from "../pages/Profile/UserProfile";
 
 const Router = createBrowserRouter([
   {
@@ -20,7 +21,9 @@ const Router = createBrowserRouter([
       { path: "/albums", element: <AlbumsPage /> },
       { path: "/album/:albumId", element: <AlbumPage /> },
       { path: "/upload", element: <Upload /> },
-      { path: "/settings", element: <Settings /> },
+      // UserProfile
+      // { path: "/settings", element: <Settings /> },
+      { path: "/profile", element: <UserProfile /> },
       { path: "/not-found", element: <NotFoundPage /> },
     ],
   },

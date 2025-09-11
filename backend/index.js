@@ -31,17 +31,21 @@ connectDB();
 // })
 
 // Routes
-
+//auth
 import authRoutes from "./routes/authentication.js";
 app.use("/auth", authRoutes);
+
+//dashboard
+import dashboardRoutes from "./routes/DashboardData.js";
+app.use("/dashboard", authMiddleware, dashboardRoutes);
 
 //file
 import fileRoutes from "./routes/file.js";
 app.use("/file", authMiddleware, fileRoutes);
 
 //album
-// import albumRoutes from "./routes/album.js";
-// app.use("/album", albumRoutes);
+import albumRoutes from "./routes/album.js";
+app.use("/album", authMiddleware, albumRoutes);
 
 app.listen(PORT, () => {
   console.log("Your server is running on port " + PORT);

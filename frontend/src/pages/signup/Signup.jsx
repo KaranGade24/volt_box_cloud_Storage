@@ -51,6 +51,12 @@ function Signup() {
           progress: undefined,
           theme: "dark",
         });
+        setFullName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        setAgreeTerms(false);
+        localStorage.setItem("user", JSON.stringify(doc));
         navigate("/dashboard");
       } else {
         console.error("❌ Error from server:", doc.message || doc);

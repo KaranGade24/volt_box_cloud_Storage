@@ -400,10 +400,18 @@ function FileReducer(state, action) {
       };
     }
     case "ADD_FILE": {
-      console.log({ a: [...action.payload, ...state.files] });
+      console.log({ a: [...action?.payload, ...state?.files] });
       return {
         ...state,
-        files: [...action.payload, ...state.files], // add a new file to the top
+        files: [...action?.payload, ...state?.files], // add a new file to the top
+        originalFiles: [...action?.payload, ...state?.files], // add a new file to the top
+      };
+    }
+    case "ADD_FILES": {
+      return {
+        ...state,
+        files: [...state.files, ...(action.payload || [])], // append multiple files
+        originalFiles: [...state.files, ...(action.payload || [])], // append multiple files
       };
     }
     case "RENAME_FILE": {
@@ -473,7 +481,7 @@ function FileReducer(state, action) {
             ...state,
             files: state.originalFiles,
           };
-          break;
+        // break;
         default:
           return state;
       }

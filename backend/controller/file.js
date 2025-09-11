@@ -48,14 +48,65 @@ export const uploadFiles = async (req, res) => {
 // ✅ Get All Files for Current User
 export const getUserFiles = async (req, res) => {
   try {
-    const files = await File.find({ uploadedBy: req.user.id }).sort({
-      createdAt: -1,
+    // Pagination parameters (defaults)
+    const page = Math.max(1, parseInt(req.query.page, 10) || 1);
+    const limit = Math.max(
+      1,
+      Math.min(50, parseInt(req.query.limit, 10) || 10)
+    );
+    const albumId = req.query.albumId;
+    const isAlbumId = albumId !== "null" ? true : false;
+
+    console.log("Fetching files for user:", req.user.id);
+    console.log("Pagination parameters:", {
+      page,
+      limit,
+      albumId,
     });
-    const count = await File.countDocuments({ uploadedBy: req.user.id });
-    res.status(200).json({ files, count });
+
+    // Calculate skip value
+    const skip = (page - 1) * limit;
+
+    // Fetch files for this user
+
+    const files = await File.find(
+      isAlbumId ? { albumId: albumId } : { uploadedBy: req.user.id }
+    )
+
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    // Count total for pagination
+    const totalFiles = await File.countDocuments(
+      isAlbumId ? { albumId: albumId } : { uploadedBy: req.user.id }
+    );
+    const totalPages = Math.ceil(totalFiles / limit);
+
+    console.log(`Fetched ${files.length} files for user ${req.user.id}`);
+
+    console.log({
+      page,
+      limit,
+      totalFiles,
+      totalPages,
+      files,
+    });
+    // Send response
+    return res.status(200).json({
+      message: "Files fetched successfully",
+      page,
+      limit,
+      totalFiles,
+      totalPages,
+      files,
+    });
   } catch (error) {
     console.error("Fetch error:", error);
-    res.status(500).json({ message: "Failed to fetch files" });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch files", error: error.message });
   }
 };
 

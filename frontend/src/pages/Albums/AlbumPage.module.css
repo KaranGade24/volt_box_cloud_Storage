@@ -67,7 +67,7 @@
 }
 
 /* Custom scrollbar */
-.albumGrid::-webkit-scrollbar {
+/* .albumGrid::-webkit-scrollbar {
   width: 6px;
 }
 .albumGrid::-webkit-scrollbar-track {
@@ -80,7 +80,7 @@
 .albumGrid {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
+} */
 
 /* -------------- Album Card -------------- */
 .albumCard {

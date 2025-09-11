@@ -294,13 +294,13 @@
 }
 
 .used {
-  font-size: 1.25rem;
-  font-weight: bold;
+  font-size: 0.975rem;
+  color: white;
 }
 
 .total {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  font-size: 0.975rem;
+  color: white;
 }
 
 .button {
