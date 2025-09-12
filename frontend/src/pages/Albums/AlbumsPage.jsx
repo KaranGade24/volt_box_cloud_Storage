@@ -18,6 +18,7 @@ export default function AlbumsPage() {
   const { showCreateModal, setShowCreateModal } = useOutletContext();
   const [loagindMore, setLoagindMore] = useState(false);
   const [page, setPage] = useState(2);
+  console.log("hasmore:;", albumHasMore);
 
   const handleFetchAlbums = async () => {
     const contorller = new AbortController();
@@ -30,7 +31,6 @@ export default function AlbumsPage() {
         setPage(data?.page);
       }
     } catch (err) {
-      alert("Error fetching albums");
       console.log(err);
     } finally {
       setLoagindMore(false);
@@ -85,48 +85,48 @@ export default function AlbumsPage() {
             </div>
           ))}
           <br />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "20px",
-            position: "relative",
-            bottom: "20px",
-            alignSelf: "center",
-            padding: "10px 20px",
-          }}
-        >
-          <button
+          <div
             style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "20px",
+              position: "relative",
+              bottom: "20px",
+              alignSelf: "center",
               padding: "10px 20px",
             }}
-            disabled={!albumHasMore}
-            onClick={handleFetchAlbums}
           >
-            {loading || loagindMore ? (
-              <>
-                Loading albums... <FaSpinner speed={1} />{" "}
-              </>
-            ) : albumHasMore ? (
-              "Load More"
-            ) : null}
-            {!albumHasMore && (
-              <h4
-                style={{
-                  color: "#aaa",
-                  wordBreak: "break-all",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  fontWeight: "700",
-                }}
-              >
-                {" "}
-                No more albums to load{" "}
-              </h4>
-            )}
-          </button>
+            <button
+              style={{
+                padding: "10px 20px",
+              }}
+              disabled={!albumHasMore.current}
+              onClick={handleFetchAlbums}
+            >
+              {loading || loagindMore ? (
+                <>
+                  Loading albums... <FaSpinner speed={1} />{" "}
+                </>
+              ) : albumHasMore.current ? (
+                "Load More"
+              ) : null}
+              {!albumHasMore.current && (
+                <h4
+                  style={{
+                    color: "#aaa",
+                    wordBreak: "break-all",
+                    fontSize: "20px",
+                    textAlign: "center",
+                    fontWeight: "700",
+                  }}
+                >
+                  {" "}
+                  No more albums to load{" "}
+                </h4>
+              )}
+            </button>
+          </div>
         </div>
 
         {showCreateModal && (

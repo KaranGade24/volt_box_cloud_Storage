@@ -6,8 +6,11 @@ const AlbumContext = createContext({
   loading: null,
   fetchAlbums: (page, limit, signal, setLoading) => {},
   hasMore: true,
-  loadDashBoardStatus:null,
-  setLoadDashBoardStatus:()=>{},
+  dashboardData: null,
+  setDashboardData: () => {},
+  getDashboardData: () => {},
+  user: null,
+  setUser: () => {},
 });
 
 export default AlbumContext;

@@ -6,8 +6,10 @@ const FileContext = createContext({
   loading: true,
   count: 0,
   fetchFiles: (page, limit, signal, setLoading, albumId) => {},
-  albumHasMore:true,
-  hasMore:true,
+  albumHasMore: true,
+  hasMore: true,
+  uploadFiles: null,
+  setUploadFiles: () => {},
 });
 
 export default FileContext;

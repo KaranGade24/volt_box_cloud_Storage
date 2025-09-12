@@ -1,14 +1,21 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import FileReducer, { INITIAL_STATE } from "./FileReducer";
 import FileContext from "./FileContext";
 
 function FileContextProvider({ children }) {
   const [state, fileActionDispatch] = useReducer(FileReducer, INITIAL_STATE);
-  const [loading, setLoading1] = useState(true);
+  const [loading, setLoading1] = useState(false);
   const hasMore = useRef(true);
   const albumHasMore = useRef(true);
   const [albumPage, setAlbumPage] = useState(1);
   const [filePage, setFilePage] = useState(1);
+  const [uploadFiles, setUploadFiles] = useState([]);
 
   const fetchFiles = async (
     page = 1,
@@ -17,6 +24,7 @@ function FileContextProvider({ children }) {
     setLoading = setLoading1,
     albumId = null
   ) => {
+    console.log("fetching files.....");
     try {
       let data = {};
 
@@ -92,26 +100,16 @@ function FileContextProvider({ children }) {
       }
 
       console.log("file from file context: ", { data });
+      setLoading(false);
 
       return data;
       // data for other files
     } catch (error) {
-      alert("Something went wrong");
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    fetchFiles(1, 5, signal);
-
-    return () => {
-      controller.abort();
-    };
-  }, []);
 
   return (
     <FileContext.Provider
@@ -123,6 +121,8 @@ function FileContextProvider({ children }) {
         fetchFiles: fetchFiles,
         albumHasMore,
         hasMore,
+        uploadFiles,
+        setUploadFiles,
       }}
     >
       {children}

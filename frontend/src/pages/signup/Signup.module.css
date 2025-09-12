@@ -1,126 +1,94 @@
-/* Basic reset for html and body to ensure full height and scrolling */
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
-  overflow-y: auto; /* Allow vertical scrolling */
-}
-
-/* Overall Container */
+/* Container */
 .registerContainer {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ensures it's at least viewport height */
-  background-color: #080a0b; /* Dark background color */
-  color: #e6edf3; /* Light text color for contrast */
-  font-family: "Inter", sans-serif; /* Using Inter font */
-  padding: 20px;
-  box-sizing: border-box;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0a0a0a, #1a1a1a, #0a0a0a);
+  color: #fff;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 /* Header */
 .header {
-  padding: 20px 0;
-  display: flex;
-  justify-content: flex-start; /* Align logo to the start */
-  width: 100%;
-  max-width: 1200px; /* Limit header width */
-  margin: 0 auto; /* Center header */
-}
-
-/* Main Registration Panel - Two Columns */
-.registerPanel {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 60px; /* Space between the card and illustration */
-  margin: 0 auto; /* Center the panel */
   padding: 20px;
-  width: 100%;
-  filter: drop-shadow(0 0 15px rgba(33, 136, 255, 0.6)); /* Blue glow effect */
-  animation: pulse-glow 2s infinite alternate; /* Subtle pulsing glow */
+  text-align: center;
 }
 
-/* Registration Card - Left Side */
-.registerCard {
-  background-color: #161b22; /* Slightly lighter dark background for the card */
-  border-radius: 15px; /* Rounded corners */
-  padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Subtle shadow */
-  width: 48%;
-  box-sizing: border-box;
+/* Panel */
+.registerPanel {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align text to the left */
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
+/* Card */
+.registerCard {
+  background: rgba(22, 28, 45, 0.6);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+/* Title */
 .registerTitle {
-  font-size: 2.2em; /* Large title font size */
+  font-size: 1.8rem;
+  margin-bottom: 12px;
   font-weight: 600;
-  margin-bottom: 10px;
-  line-height: 1.2;
-  color: #e6edf3;
 }
 
 .registerSubtitle {
-  font-size: 1em;
-  color: #8b949e; /* Lighter grey for subtitle */
-  margin-bottom: 30px;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+  margin-bottom: 24px;
 }
 
-/* Form Styling */
+/* Form */
 .registerForm {
-  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between form elements */
+  gap: 14px;
 }
 
 .formInput {
-  width: 100%;
-  padding: 15px 20px;
-  border: 1px solid #30363d; /* Darker border */
-  border-radius: 8px; /* Rounded input fields */
-  background-color: #0d1117; /* Dark background for inputs */
-  color: #e6edf3; /* Light text color for input */
-  font-size: 1em;
-  outline: none; /* Remove default outline */
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.formInput::placeholder {
-  color: #6a737d; /* Placeholder text color */
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.95rem;
+  transition: border 0.2s, box-shadow 0.2s;
 }
 
 .formInput:focus {
-  border-color: #2188ff; /* Blue border on focus */
-  box-shadow: 0 0 0 3px rgba(33, 136, 255, 0.3); /* Blue glow on focus */
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
-/* Terms & Conditions Checkbox */
+/* Terms */
 .terms {
   display: flex;
-  align-items: center;
-  font-size: 0.9em;
-  color: #8b949e;
-  margin-top: 5px;
-  margin-bottom: 10px;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.85rem;
+  text-align: left;
+  color: #cbd5e1;
 }
 
-.terms input[type="checkbox"] {
-  margin-right: 10px;
-  accent-color: #2188ff; /* Blue checkbox */
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+.terms input {
+  margin-top: 3px;
 }
 
 .terms a {
-  color: #2188ff; /* Blue link color */
+  color: #3b82f6;
   text-decoration: none;
-  font-weight: 500;
 }
 
 .terms a:hover {
@@ -129,146 +97,105 @@ body {
 
 /* Buttons */
 .btn {
-  width: 100%;
-  padding: 15px 20px;
+  padding: 12px;
+  border-radius: 10px;
   border: none;
-  border-radius: 8px;
-  font-size: 1.1em;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transition: background 0.2s;
 }
 
 .primary {
-  background-color: #2188ff; /* Primary blue button */
-  color: #ffffff;
+  background: #3b82f6;
+  color: white;
 }
 
 .primary:hover {
-  background-color: #007bff; /* Darker blue on hover */
-  box-shadow: 0 5px 15px rgba(33, 136, 255, 0.3);
+  background: #2563eb;
 }
 
 .google {
-  background-color: #2d333b; /* Darker grey for Google button */
-  color: #e6edf3;
-  border: 1px solid #444c56; /* Subtle border */
-}
-
-.google:hover {
-  background-color: #373e47; /* Slightly lighter on hover */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .googleIcon {
   width: 20px;
   height: 20px;
-  margin-right: 10px;
 }
 
-/* "Or" Separator */
+/* OR Separator */
 .orSeparator {
   display: flex;
   align-items: center;
   text-align: center;
-  color: #6a737d;
-  margin: 15px 0;
+  margin: 14px 0;
+  color: #94a3b8;
+  font-size: 0.9rem;
 }
 
 .orSeparator::before,
 .orSeparator::after {
   content: "";
   flex: 1;
-  border-bottom: 1px solid #30363d; /* Line color */
+  border-bottom: 1px solid #334155;
+  margin: 0 10px;
 }
 
-.orSeparator:not(:empty)::before {
-  margin-right: 15px;
+/* Error */
+.passwordError {
+  color: #f87171;
+  font-size: 0.85rem;
+  text-align: left;
+  margin-top: -6px;
 }
 
-.orSeparator:not(:empty)::after {
-  margin-left: 15px;
-}
-
+/* Bottom Links */
 .bottomLinks {
-  text-align: center;
   margin-top: 20px;
-  font-size: 0.9em;
-  color: #8b949e;
+  font-size: 0.9rem;
+  color: #cbd5e1;
 }
 
 .bottomLinks a {
-  color: #2188ff;
+  color: #3b82f6;
+  margin-left: 5px;
   text-decoration: none;
-  font-weight: 500;
 }
 
 .bottomLinks a:hover {
   text-decoration: underline;
 }
 
-@keyframes pulse-glow {
+/* Animation */
+@keyframes fadeIn {
   from {
-    filter: drop-shadow(0 0 10px rgba(33, 136, 255, 0.4));
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    filter: drop-shadow(0 0 25px rgba(33, 136, 255, 0.8));
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 900px) {
-  .registerPanel {
-    flex-direction: column; /* Stack elements vertically on smaller screens */
-    gap: 40px;
-  }
-
-  .illustration {
-    order: -1; /* Move illustration above the form on small screens */
-    margin-bottom: 20px;
-    display: none; /* Hide the illustration on screens smaller than 900px */
-  }
-
-  .registerCard {
-    padding: 30px;
-  }
-
-  .registerTitle {
-    font-size: 1.8em;
-  }
-}
-
+/* Responsive */
 @media (max-width: 500px) {
-  .registerContainer {
-    padding: 15px;
-  }
-
-  .header {
-    padding: 15px 0;
-  }
-
   .registerCard {
-    padding: 25px;
+    padding: 24px;
+    border-radius: 12px;
   }
 
   .registerTitle {
-    font-size: 1.5em;
+    font-size: 1.4rem;
   }
 
-  .formInput,
-  .btn {
-    padding: 12px 15px;
-    font-size: 1em;
+  .registerSubtitle {
+    font-size: 0.85rem;
   }
-}
-
-.passwordError {
-  color: #ff4d4d; /* Red color for the error message */
-  font-weight: 500;
-  margin-top: -10px; /* Adjust as needed */
-  margin-bottom: 10px;
-  text-align: left;
 }

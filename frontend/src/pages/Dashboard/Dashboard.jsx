@@ -7,33 +7,7 @@ import FileStats from "../../components/FileStats";
 import AlbumContext from "../../store/Albums/AlbumContex";
 
 export default function Dashboard() {
-  const [dashboardData, setDashboardData] = useState();
-  const { loadDashBoardStatus } = useContext(AlbumContext);
-
-  const getDashboardData = async () => {
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/dashboard`, {
-        credentials: "include", // cookies/session
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to fetch dashboard data");
-      }
-
-      console.log("Dashboard data: ", data);
-      setDashboardData(data);
-      return data;
-    } catch (error) {
-      alert("Failed to fetch dashboard data");
-      console.error("Error fetching dashboard data:", error);
-    }
-  };
-
-  useEffect(() => {
-    setDashboardData((pre) => pre);
-    getDashboardData();
-  }, [loadDashBoardStatus]);
+  const { dashboardData } = useContext(AlbumContext);
 
   console.log(dashboardData);
 

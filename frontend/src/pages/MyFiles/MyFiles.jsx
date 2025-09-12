@@ -148,46 +148,48 @@ export default function MyFiles() {
             ))
           )}
           {/* loader div → watched by IntersectionObserver */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "20px",
-              position: "relative",
-              bottom: "20px",
-              alignSelf: "center",
-              padding: "10px 20px",
-            }}
-          >
-            <button
-              style={{ padding: "10px 20px", width: "100%" }}
-              disabled={!hasMore}
-              onClick={handleFetchFile}
+          {!loading && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "20px",
+                position: "relative",
+                bottom: "20px",
+                alignSelf: "center",
+                padding: "10px 20px",
+              }}
             >
-              {loading || loagindMore ? (
-                <>
-                  Loading files... <FaSpinner speed={1} />{" "}
-                </>
-              ) : hasMore ? (
-                "Load More"
-              ) : null}
-              {!hasMore && (
-                <h4
-                  style={{
-                    color: "#aaa",
-                    wordBreak: "break-all",
-                    fontSize: "20px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  {" "}
-                  No more files to load{" "}
-                </h4>
-              )}
-            </button>
-          </div>
+              <button
+                style={{ padding: "10px 20px", width: "100%" }}
+                disabled={!hasMore}
+                onClick={handleFetchFile}
+              >
+                {loading || loagindMore ? (
+                  <>
+                    Loading files... <FaSpinner speed={1} />{" "}
+                  </>
+                ) : hasMore ? (
+                  "Load More"
+                ) : null}
+                {!hasMore && (
+                  <h4
+                    style={{
+                      color: "#aaa",
+                      wordBreak: "break-all",
+                      fontSize: "20px",
+                      textAlign: "center",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {" "}
+                    No more files to load{" "}
+                  </h4>
+                )}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

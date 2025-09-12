@@ -9,31 +9,26 @@ import { useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AlbumContext from "./store/Albums/AlbumContex";
+import FileContext from "./store/files/FileContext";
 
 function App() {
   const navigate = useNavigate();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const { Albums, AlbumDispatch } = useContext(AlbumContext);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useContext(AlbumContext);
+  const { fetchFiles } = useContext(FileContext);
 
-  // useEffect(() => {
-  //   const protect = async () => {
-  //     try {
-  //       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/user`, {
-  //         method: "POST",
-  //         credentials: "include",
-  //       });
+  useEffect(() => {
+    if (user === null) return;
 
-  //       if (!res.ok) {
-  //         navigate("/login");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user:", error);
-  //       navigate("/login");
-  //     }
-  //   };
-  //   protect();
-  // }, [navigate]);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    console.log("fetchin file:");
+    fetchFiles(1, 5, signal);
+
+    return () => {
+      controller.abort();
+    };
+  }, [user]);
 
   useEffect(() => {
     const checkUser = () => {
@@ -60,15 +55,27 @@ function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className={styles.container}>
-        <div className={styles.wrapper}>
-          <Sidebar showCreateModal={showCreateModal} />
-          <div className={styles.main}>
-            <Header />
-            <Outlet context={{ showCreateModal, setShowCreateModal }} />
-          </div>
+
+      {user === null && (
+        <div className={styles.loadingScreen}>
+          <div className={styles.spinner}></div>
+          <p>Loading...</p>
         </div>
-      </div>
+      )}
+
+      {user !== null && (
+        <>
+          <div className={styles.container}>
+            <div className={styles.wrapper}>
+              <Sidebar showCreateModal={showCreateModal} />
+              <div className={styles.main}>
+                <Header />
+                <Outlet context={{ showCreateModal, setShowCreateModal }} />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

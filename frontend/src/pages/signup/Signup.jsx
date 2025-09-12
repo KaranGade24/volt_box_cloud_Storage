@@ -4,7 +4,7 @@ import styles from "./Signup.module.css";
 import VoltBoxLogo from "../../components/VotBoxLogo";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 function Signup() {
   // State for form inputs
@@ -19,7 +19,28 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //ckeck filds are present or not
+    if (
+      fullName == "" ||
+      email == "" ||
+      password == "" ||
+      confirmPassword == ""
+    ) {
+      toast.error("❌ All fields are required", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+      return;
+    }
+
     console.log({ fullName, email, password, confirmPassword, agreeTerms });
+
     const payload = {
       fullName,
       email,
@@ -71,6 +92,7 @@ function Signup() {
   return (
     <>
       <div className={styles.registerContainer}>
+        <ToastContainer position="top-right" autoClose={3000} />
         <header className={styles.header}>
           <VoltBoxLogo />
         </header>
@@ -118,19 +140,19 @@ function Signup() {
                 <div className={styles.passwordError}>{passwordError}</div>
               )}
 
-              <label className={styles.terms}>
+              {/* <label className={styles.terms}>
                 <input
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
                 />
-                <span>
+                 <span>
                   I agree to the{" "}
                   <a href="#" onClick={(e) => e.preventDefault()}>
                     Terms &amp; Conditions
                   </a>
-                </span>
-              </label>
+                </span> 
+              </label> */}
 
               <button
                 type="submit"
@@ -143,7 +165,7 @@ function Signup() {
                 <span>or</span>
               </div>
 
-              <button
+              {/* <button
                 type="button"
                 className={`${styles.btn} ${styles.google}`}
               >
@@ -153,7 +175,7 @@ function Signup() {
                   className={styles.googleIcon}
                 />
                 Continue with Google
-              </button>
+              </button> */}
             </form>
 
             <div className={styles.bottomLinks}>

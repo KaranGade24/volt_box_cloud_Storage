@@ -6,7 +6,8 @@ function AlbumContextProvider({ children }) {
   const [state, AlbumDispatch] = useReducer(AlbumReducer, INITIAL_STATE);
   const [loading, setLoading] = useState(false);
   const hasMore = useRef(true);
-  const [loadDashBoardStatus, setLoadDashBoardStatus] =useState(0);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [user, setUser] = useState(null);
 
   const fetchAlbums = async (
     page = 1,
@@ -72,7 +73,7 @@ function AlbumContextProvider({ children }) {
       data = {
         ...data,
         page: data.page + 1,
-        hasMore: data.page + 1 < data.totalPages ? true : false,
+        hasMore: data.page + 1 <= data.totalPages ? true : false,
       };
       hasMore.current = data.hasMore;
 
@@ -91,6 +92,8 @@ function AlbumContextProvider({ children }) {
   };
 
   useEffect(() => {
+    if (user === null) return;
+
     const controller = new AbortController();
     const signal = controller.signal;
     fetchAlbums(1, 5, signal);
@@ -98,7 +101,32 @@ function AlbumContextProvider({ children }) {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [user]);
+
+  const getDashboardData = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/dashboard`, {
+        credentials: "include", // cookies/session
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to fetch dashboard data");
+      }
+
+      console.log("Dashboard data: ", data);
+      setDashboardData(data);
+      return data;
+    } catch (error) {
+      alert("Failed to fetch dashboard data");
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    getDashboardData();
+  }, [user]);
 
   return (
     <AlbumContext.Provider
@@ -108,8 +136,11 @@ function AlbumContextProvider({ children }) {
         loading,
         fetchAlbums,
         hasMore,
-        loadDashBoardStatus,
-        setLoadDashBoardStatus,
+        dashboardData,
+        setDashboardData,
+        getDashboardData,
+        user,
+        setUser,
       }}
     >
       {children}

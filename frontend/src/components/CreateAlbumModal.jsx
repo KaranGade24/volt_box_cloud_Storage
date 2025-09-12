@@ -19,9 +19,24 @@ export default function CreateAlbumModal({ onClose }) {
   const [selectedFileIds, setSelectedFileIds] = useState([]);
   const [existingFiles, setExistingFiles] = useState([]);
   const { files } = useContext(FileContext);
-  const { AlbumDispatch, Albums, setLoadDashBoardStatus } =
+  const { AlbumDispatch, Albums, getDashboardData, dashboardData } =
     useContext(AlbumContext);
   const [loading, setLoading] = useState(false);
+
+  const parseSize = (sizeStr) => {
+    if (!sizeStr) return 0;
+    const [val, unit] = sizeStr.split(" ");
+    const num = parseFloat(val);
+    const units = { Bytes: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
+    return num * (units[unit] || 1);
+  };
+
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return bytes + " Bytes";
+    if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(2) + " KB";
+    if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(2) + " MB";
+    return (bytes / 1024 ** 3).toFixed(2) + " GB";
+  };
 
   useEffect(() => {
     setExistingFiles(files);
@@ -105,8 +120,8 @@ export default function CreateAlbumModal({ onClose }) {
           payload: payload, // contains _id, name, etc.
         });
 
+        getDashboardData();
         onClose();
-        setLoadDashBoardStatus((pre) => pre + 1);
       }
     } catch (error) {
       console.error("Error creating album:", error);
@@ -253,19 +268,45 @@ export default function CreateAlbumModal({ onClose }) {
                 multiple
                 className={styles.hiddenInput}
                 onChange={(e) => {
-                  const files = Array.from(e.target.files);
-                  setUploadFiles((prevFiles) => [...prevFiles, ...files]);
-                  console.log(uploadFiles);
+                  const newFiles = Array.from(e.target.files);
+
+                  // Get usage info from dashboard
+                  const usedBytes = parseSize(dashboardData?.storage?.used);
+                  const totalBytes = parseSize(dashboardData?.storage?.total);
+
+                  // Calculate sizes
+                  const newFilesSize = newFiles.reduce(
+                    (acc, f) => acc + f.size,
+                    0
+                  );
+                  const alreadyAddedSize = uploadFiles.reduce(
+                    (acc, f) => acc + f.size,
+                    0
+                  );
+                  const remainingBytes =
+                    totalBytes - usedBytes - alreadyAddedSize;
+
+                  if (newFilesSize > remainingBytes) {
+                    alert(
+                      `Upload exceeds your available storage. You have ${formatSize(
+                        remainingBytes
+                      )} left.`
+                    );
+                    return;
+                  }
+
+                  // If within limit → add to state
+                  setUploadFiles((prevFiles) => [...prevFiles, ...newFiles]);
                 }}
-                // onChange={handleFileUpload} // <- your custom function
               />
+
               <div className={styles.dropZone}>
                 <FaCloudUploadAlt size={28} />
                 <p>Drop files here or click to upload</p>
               </div>
             </label>
 
-            <label>Settings</label>
+            {/* <label>Settings</label>
             <div className={styles.visibility}>
               <span
                 className={visibility === "Private" ? styles.active : ""}
@@ -279,8 +320,9 @@ export default function CreateAlbumModal({ onClose }) {
               >
                 Public
               </span>
-            </div>
-
+            </div> */}
+            <br />
+            <br />
             <div className={styles.tags}>
               <input
                 type="text"

@@ -1,4 +1,3 @@
-// src/components/Upload.jsx
 import React, { useContext, useRef, useState } from "react";
 import styles from "./Upload.module.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -10,53 +9,15 @@ import { toast } from "react-toastify";
 import AlbumContext from "../../store/Albums/AlbumContex";
 
 export default function Upload() {
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
-  const { fileActionDispatch } = useContext(FileContext);
-  const { setLoadDashBoardStatus } = useContext(AlbumContext);
-
-  // const uploadFile = (f, index) => {
-  //   const controller = new AbortController();
-  //   const signal = controller.signal;
-
-  //   const formData = new FormData();
-  //   formData.append("files", f.file);
-
-  //   // Update controller in file state
-  //   const updatedFiles = [...files];
-  //   updatedFiles[index].controller = controller;
-  //   updatedFiles[index].status = "uploading";
-  //   setFiles(updatedFiles);
-
-  //   fetch(`${import.meta.env.VITE_API_URL}/file`, {
-  //     method: "POST",
-  //     body: formData,
-  //     signal,
-  //     credentials: "include",
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       updatedFiles[index].status = "success";
-  //       updatedFiles[index].uploaded = parseFloat(updatedFiles[index].size); // Full uploaded
-  //       setFiles([...updatedFiles]);
-  //       console.log(data.files);
-  //       fileActionDispatch({
-  //         type: "ADD_FILE",
-  //         payload: data.files,
-  //       });
-
-  //       setLoadDashBoardStatus((pre) => pre + 1);
-  //     })
-  //     .catch((err) => {
-  //       if (err.name === "AbortError") {
-  //         updatedFiles[index].status = "paused"; // Can resume
-  //       } else {
-  //         updatedFiles[index].status = "failed";
-  //       }
-  //       setFiles([...updatedFiles]);
-  //     });
-  // };
+  const {
+    fileActionDispatch,
+    uploadFiles: files,
+    setUploadFiles: setFiles,
+  } = useContext(FileContext);
+  const { getDashboardData, dashboardData } = useContext(AlbumContext);
 
   const uploadFile = (f, index) => {
     const xhr = new XMLHttpRequest();
@@ -113,7 +74,7 @@ export default function Upload() {
         });
 
         fileActionDispatch({ type: "ADD_FILE", payload: data.files });
-        setLoadDashBoardStatus((pre) => pre + 1);
+        getDashboardData();
       } else {
         setFiles((prev) => {
           const copy = [...(prev || [])];
@@ -148,41 +109,20 @@ export default function Upload() {
     xhr.send(formData);
   };
 
-  // const handleFileSelect = (e) => {
-  //   e.preventDefault();
-  //   console.log("in select");
-  //   console.log({ files });
-  //   if (files.length) {
-  //     console.log("in if");
-  //     toast.info("Clear all files first", {
-  //       position: "top-right",
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: "dark",
-  //     });
-  //     return;
-  //   }
-  //   console.log("all files null");
-  //   setFiles(null);
+  const parseSize = (sizeStr) => {
+    if (!sizeStr) return 0;
+    const [val, unit] = sizeStr.split(" ");
+    const num = parseFloat(val);
+    const units = { Bytes: 1, KB: 1024, MB: 1024 ** 2, GB: 1024 ** 3 };
+    return num * (units[unit] || 1);
+  };
 
-  //   const fileData = Array.from(e.target.files).map((file) => ({
-  //     file,
-  //     name: file.name,
-  //     size: (file.size / 1048576).toFixed(2), // MB
-  //     uploaded: 0,
-  //     status: "pending", // 'uploading' | 'paused' | 'success' | 'failed' | 'cancelled'
-  //     controller: null,
-  //     preview: file.type.startsWith("image/")
-  //       ? URL.createObjectURL(file)
-  //       : null,
-  //   }));
-  //   console.log("all file set:", fileData);
-  //   setFiles(fileData);
-  // };
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return bytes + " Bytes";
+    if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(2) + " KB";
+    if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(2) + " MB";
+    return (bytes / 1024 ** 3).toFixed(2) + " GB";
+  };
 
   const handleFileSelect = (e) => {
     e.preventDefault();
@@ -191,13 +131,41 @@ export default function Upload() {
       return;
     }
 
-    const fileData = Array.from(e.target.files).map((file) => ({
+    const selectedFiles = Array.from(e.target.files);
+
+    // current usage
+    const usedBytes = parseSize(dashboardData?.storage?.used);
+    const totalBytes = parseSize(dashboardData?.storage?.total);
+    const remainingBytes = totalBytes - usedBytes;
+    // new files size
+    const newSize = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+
+    if (usedBytes + newSize > totalBytes) {
+      toast.error(
+        `Upload exceeds your available storage. You have ${formatSize(
+          remainingBytes
+        )} left.`,
+        {
+          theme: "dark",
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      return;
+    }
+
+    const fileData = selectedFiles.map((file) => ({
       file,
       name: file.name,
       size: (file.size / 1048576).toFixed(2), // MB string for display
-      sizeBytes: file.size, // keep raw bytes for progress math
-      uploaded: 0, // MB
-      percent: 0, // percent 0-100
+      sizeBytes: file.size,
+      uploaded: 0,
+      percent: 0,
       status: "pending",
       controller: null,
       preview: file.type.startsWith("image/")
@@ -209,30 +177,48 @@ export default function Upload() {
   };
 
   const handleDrop = (e) => {
-    if (files) {
-      toast.info("Clear all files first", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-      return;
-    }
-    setFiles(null);
-
     e.preventDefault();
     setDragActive(false);
-    // processFiles(Array.from(e.dataTransfer.files));
-    const fileData = Array.from(e.dataTransfer.files).map((file) => ({
+
+    if (files && files.length) {
+      toast.info("Clear all files first", { theme: "dark" });
+      return;
+    }
+
+    const droppedFiles = Array.from(e.dataTransfer.files);
+
+    const usedBytes = parseSize(dashboardData?.storage?.used);
+    const totalBytes = parseSize(dashboardData?.storage?.total);
+    const newSize = droppedFiles.reduce((acc, f) => acc + f.size, 0);
+    const remainingBytes = totalBytes - usedBytes;
+
+    if (usedBytes + newSize > totalBytes) {
+      toast.error(
+        `Upload exceeds your available storage. You have ${formatSize(
+          remainingBytes
+        )} left.`,
+        {
+          theme: "dark",
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        }
+      );
+      return;
+    }
+
+    const fileData = droppedFiles.map((file) => ({
       file,
       name: file.name,
       size: (file.size / 1048576).toFixed(2), // MB
+      sizeBytes: file.size,
       uploaded: 0,
-      status: "pending", // 'uploading' | 'paused' | 'success' | 'failed' | 'cancelled'
+      percent: 0,
+      status: "pending",
       controller: null,
       preview: file.type.startsWith("image/")
         ? URL.createObjectURL(file)
@@ -241,30 +227,6 @@ export default function Upload() {
 
     setFiles(fileData);
   };
-
-  // const resumeUpload = (index) => {
-  //   const f = files[index];
-  //   if (f.status === "paused") {
-  //     uploadFile(f, index);
-  //   }
-  // };
-
-  // const pauseUpload = (index) => {
-  //   const f = files[index];
-  //   if (f.controller) {
-  //     f.controller.abort();
-  //   }
-  // };
-
-  // const cancelUpload = (index) => {
-  //   setFiles((prev) => {
-  //     const updated = [...prev];
-  //     const f = updated[index];
-  //     if (f.controller) f.controller.abort();
-  //     updated[index].status = "cancelled";
-  //     return updated;
-  //   });
-  // };
 
   const pauseUpload = (index) => {
     const f = files[index];
@@ -289,14 +251,6 @@ export default function Upload() {
     updated[index].status = "cancelled";
     setFiles(updated);
   };
-
-  // const cancelAllUpload = () => {
-  //   files.forEach((f) => {
-  //     if (f.controller) f.controller.abort();
-  //   });
-  //   console.log("all file clear");
-  //   setFiles((prev) => (prev = []));
-  // };
 
   const cancelAllUpload = () => {
     if (!files || files.length === 0) return;
@@ -340,7 +294,7 @@ export default function Upload() {
             htmlFor="publicSwitch"
             style={{ paddingRight: "10px" }}
           >
-            Make files public
+            {/* Make files public */}
           </label>
         </div>
       </div>
@@ -389,13 +343,19 @@ export default function Upload() {
               <span className={styles.tag}>Videos</span>
             </div>
           </div>
-          <div className="mb-3">8.2 GB of 10 GB remaining</div>
-          <div className="form-check form-switch text-white mb-3">
-            <input className="form-check-input" type="checkbox" id="autoTag" />
+
+          <div className="mb-3">
+            {dashboardData !== null &&
+              `${dashboardData?.storage?.used || 0} of
+            ${dashboardData?.storage?.total || 0}  remaining`}
+          </div>
+          {/* <div className="form-check form-switch text-white mb-3">
+            {/* <input className="form-check-input" type="checkbox" id="autoTag" />
             <label className="form-check-label" htmlFor="autoTag">
               Auto-tag files
-            </label>
-          </div>
+            </label> *
+        </div> 
+        */}
           {/* <button
             className="btn btn-primary w-100 mb-2"
             onClick={() => {
@@ -411,7 +371,6 @@ export default function Upload() {
             {" "}
             Upload Now
           </button> */}
-
           <button
             className="btn btn-primary w-100 mb-2"
             onClick={() => {
@@ -426,7 +385,6 @@ export default function Upload() {
           >
             Upload Now
           </button>
-
           <button
             className="btn btn-outline-secondary w-100"
             onClick={cancelAllUpload}
@@ -513,11 +471,7 @@ export default function Upload() {
                         />
                       </div>
 
-                      {/* <small className="text-muted">
-                        {f.uploaded.toFixed(2)} MB / {f.size}
-                      </small> */}
-
-                      <small className="text-muted">
+                      <small className="text-white">
                         {(f.uploaded ?? 0).toFixed(2)} MB / {f.size} MB
                       </small>
                     </div>

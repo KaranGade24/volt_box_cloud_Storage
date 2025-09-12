@@ -3,7 +3,7 @@ import styles from "./Login.module.css";
 import image from "../../assets/cloud-cube.png";
 import VoltBoxLogo from "../../components/VotBoxLogo";
 import { NavLink, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Login() {
   const emailValue = useRef("");
@@ -17,7 +17,16 @@ export default function Login() {
     const email = emailValue.current.value;
     const password = passwordValue.current.value;
     if (!email || !password) {
-      toast.error("Please enter both email and password.");
+      toast.error("Please enter both email and password.", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       return;
     }
     const payload = {
@@ -68,6 +77,7 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
+      <ToastContainer position="top-right" autoClose={3000} />
       <header className={styles.header}>
         <VoltBoxLogo />
       </header>
@@ -95,10 +105,10 @@ export default function Login() {
               ref={passwordValue}
             />
             <div className={styles.loginOptions}>
-              <label>
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
+              {/* <label> */}
+              {/* <input type="checkbox" /> */}
+              {/* <span>Remember me</span> */}
+              {/* </label> */}
               {/* <a href="#" className={styles.forgot}>
                 Forgot password?
               </a> */}
@@ -106,23 +116,23 @@ export default function Login() {
             <button type="submit" className={`${styles.btn} ${styles.primary}`}>
               {loading ? "Loading..." : "Login"}
             </button>
-            <button type="button" className={`${styles.btn} ${styles.google}`}>
+            {/* <button type="button" className={`${styles.btn} ${styles.google}`}>
               <img
                 src="https://www.svgrepo.com/show/355037/google.svg"
                 alt="Google"
                 className={styles.googleIcon}
               />
               Sign in with Google
-            </button>
+            </button> */}
           </form>
           <div className={styles.bottomLinks}>
             Don't have an account?
             <NavLink to="/signup">Signup</NavLink>
           </div>
         </div>
-        <div className={styles.illustration}>
+        {/* <div className={styles.illustration}>
           <img src={image} alt="Cloud Cube" />
-        </div>
+        </div> */}
       </div>
     </div>
   );

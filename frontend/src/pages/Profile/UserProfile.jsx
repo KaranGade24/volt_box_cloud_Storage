@@ -7,7 +7,7 @@ import { FaUser } from "react-icons/fa";
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkUser = () => {
