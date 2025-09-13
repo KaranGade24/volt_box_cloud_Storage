@@ -34,8 +34,6 @@ export default function Login() {
       password,
     };
 
-    console.log(payload);
-
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: "POST",

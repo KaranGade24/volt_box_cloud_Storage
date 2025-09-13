@@ -12,7 +12,6 @@ import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 
 function Sidebar({ showCreateModal }) {
-  console.log({ showCreateModal });
   return (
     <div
       className={styles["sidebar-container"]}

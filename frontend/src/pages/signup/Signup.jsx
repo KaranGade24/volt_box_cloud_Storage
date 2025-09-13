@@ -39,8 +39,6 @@ function Signup() {
       return;
     }
 
-    console.log({ fullName, email, password, confirmPassword, agreeTerms });
-
     const payload = {
       fullName,
       email,
@@ -61,7 +59,6 @@ function Signup() {
       const doc = await res.json();
 
       if (res.ok) {
-        console.log("✅ Success:", doc);
         toast.success("✅ Account created successfully!", {
           position: "top-right",
           autoClose: 5000,
@@ -80,7 +77,7 @@ function Signup() {
         localStorage.setItem("user", JSON.stringify(doc));
         navigate("/dashboard");
       } else {
-        console.error("❌ Error from server:", doc.message || doc);
+        console.error("❌ Error from server:", doc?.message || "");
         toast.error("❌ server error");
       }
     } catch (error) {

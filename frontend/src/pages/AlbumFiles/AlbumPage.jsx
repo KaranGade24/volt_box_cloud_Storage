@@ -52,7 +52,6 @@ function AlbumPage() {
     setSortValue(val);
 
     if (val === "Clear filter") {
-      console.log("Clear filter");
       setFilterOption("-- Filter By --");
       AlbumDispatch({
         type: "SORT_FILES",
@@ -84,18 +83,15 @@ function AlbumPage() {
     try {
       setLoagindMore(true);
       const data = await fetchFiles(page, 10, signal, setLoagindMore, albumId);
-      console.log("data:from albumpage ", data);
       AlbumDispatch({
-        type: "ADD_fILES_TO_ALBUM",
+        type: "ADD_FILES_TO_ALBUM",
         payload: { files: data.files, AlbumId: albumId },
       });
       if (albumHasMore.current) {
         setPage((prev) => prev + 1);
       }
-      console.log("data: ", data);
     } catch (err) {
-      alert("Something went wrong");
-      console.log(err);
+      console.error(err);
     } finally {
       controller.abort();
       setLoagindMore(false);
@@ -105,15 +101,6 @@ function AlbumPage() {
   if (!album) return null;
 
   const files = album.files || [];
-
-  console.log(
-    "albumHasMore.current: ",
-    albumHasMore.current,
-    "loagindMore: ",
-    loagindMore,
-    "page: ",
-    page
-  );
 
   return (
     <div className={styles.myFilesWrapper}>

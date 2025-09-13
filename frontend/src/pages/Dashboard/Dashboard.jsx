@@ -9,8 +9,6 @@ import AlbumContext from "../../store/Albums/AlbumContex";
 export default function Dashboard() {
   const { dashboardData } = useContext(AlbumContext);
 
-  console.log(dashboardData);
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.main}>

@@ -1,11 +1,11 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./Upload.module.css";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { BsCheckCircle, BsXCircle } from "react-icons/bs";
 import { RiFileImageFill, RiFilePdfFill, RiVideoFill } from "react-icons/ri";
 import FileContext from "../../store/files/FileContext";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import AlbumContext from "../../store/Albums/AlbumContex";
 
 export default function Upload() {
@@ -16,97 +16,142 @@ export default function Upload() {
     fileActionDispatch,
     uploadFiles: files,
     setUploadFiles: setFiles,
+    fetchFiles,
   } = useContext(FileContext);
   const { getDashboardData, dashboardData } = useContext(AlbumContext);
+  const [loading, setLoading] = useState(false);
+
+  const checkStatusToSetDefaultValue = () => {
+    const allDone = files.every(
+      (f) =>
+        f.status === "success" || f.status === "failed" || f.status === "paused"
+    );
+
+    if (allDone) {
+      const control = new AbortController();
+      const signal = control.signal;
+      // fileActionDispatch({ type: "ADD_FILES", payload: data.files });
+      fetchFiles(1, 10, signal);
+      getDashboardData();
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkStatusToSetDefaultValue();
+  }, [files]);
 
   const uploadFile = (f, index) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append("files", f.file);
+    try {
+      setLoading(true);
 
-    // Set status immediately (use functional set to avoid stale closures)
-    setFiles((prev) => {
-      const copy = [...(prev || [])];
-      copy[index] = {
-        ...copy[index],
-        status: "uploading",
-        uploaded: 0,
-        percent: 0,
-        controller: xhr,
-      };
-      return copy;
-    });
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append("files", f.file);
 
-    xhr.upload.onprogress = (e) => {
-      if (!e.lengthComputable) return;
-      const uploadedBytes = e.loaded;
-      const totalBytes = e.total;
-      const uploadedMB = uploadedBytes / 1048576; // MB
-      const percent = Math.min(100, (uploadedBytes / totalBytes) * 100);
-
+      // Set status immediately
       setFiles((prev) => {
         const copy = [...(prev || [])];
-        if (!copy[index]) return copy;
         copy[index] = {
           ...copy[index],
-          uploaded: Number(uploadedMB.toFixed(2)),
-          percent: Number(percent.toFixed(2)),
           status: "uploading",
+          uploaded: 0,
+          percent: 0,
           controller: xhr,
         };
         return copy;
       });
-    };
 
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const data = JSON.parse(xhr.responseText);
+      xhr.upload.onprogress = (e) => {
+        if (!e.lengthComputable) return;
+        const uploadedBytes = e.loaded;
+        const totalBytes = e.total;
+        const uploadedMB = uploadedBytes / 1048576; // MB
+        const percent = Math.min(100, (uploadedBytes / totalBytes) * 100);
+
         setFiles((prev) => {
           const copy = [...(prev || [])];
           if (!copy[index]) return copy;
           copy[index] = {
             ...copy[index],
-            status: "success",
-            uploaded: Number(copy[index].size), // full size in MB (display)
-            percent: 100,
+            uploaded: Number(uploadedMB.toFixed(2)),
+            percent: Number(percent.toFixed(2)),
+            status: "uploading",
+            controller: xhr,
           };
           return copy;
         });
+      };
 
-        fileActionDispatch({ type: "ADD_FILE", payload: data.files });
-        getDashboardData();
-      } else {
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+
+          setFiles((prev) => {
+            const copy = [...(prev || [])];
+            if (!copy[index]) return copy;
+            copy[index] = {
+              ...copy[index],
+              status: "success",
+              uploaded: Number(copy[index].size),
+              percent: 100,
+            };
+            return copy;
+          });
+
+          // Check if all files are finished
+          checkStatusToSetDefaultValue();
+        } else {
+          setFiles((prev) => {
+            const copy = [...(prev || [])];
+            if (!copy[index]) return copy;
+            copy[index] = { ...copy[index], status: "failed" };
+
+            return copy;
+          });
+
+          // Same check on failure
+          checkStatusToSetDefaultValue();
+        }
+      };
+
+      xhr.onerror = () => {
         setFiles((prev) => {
           const copy = [...(prev || [])];
           if (!copy[index]) return copy;
           copy[index] = { ...copy[index], status: "failed" };
           return copy;
         });
-      }
-    };
+        checkStatusToSetDefaultValue();
+      };
 
-    xhr.onerror = () => {
-      setFiles((prev) => {
-        const copy = [...(prev || [])];
-        if (!copy[index]) return copy;
-        copy[index] = { ...copy[index], status: "failed" };
-        return copy;
+      xhr.onabort = () => {
+        setFiles((prev) => {
+          const copy = [...(prev || [])];
+          if (!copy[index]) return copy;
+          copy[index] = { ...copy[index], status: "paused" };
+          return copy;
+        });
+        checkStatusToSetDefaultValue();
+      };
+
+      xhr.open("POST", `${import.meta.env.VITE_API_URL}/file`, true);
+      xhr.withCredentials = true;
+      xhr.send(formData);
+    } catch (err) {
+      setLoading(false);
+      toast.error("Something went wrong", {
+        theme: "dark",
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
       });
-    };
-
-    xhr.onabort = () => {
-      // mark paused (or cancelled depending on UI)
-      setFiles((prev) => {
-        const copy = [...(prev || [])];
-        if (!copy[index]) return copy;
-        copy[index] = { ...copy[index], status: "paused" };
-        return copy;
-      });
-    };
-
-    xhr.open("POST", `${import.meta.env.VITE_API_URL}/file`, true);
-    xhr.withCredentials = true;
-    xhr.send(formData);
+      checkStatusToSetDefaultValue();
+    }
   };
 
   const parseSize = (sizeStr) => {
@@ -236,6 +281,7 @@ export default function Upload() {
       updated[index].status = "paused";
       setFiles(updated);
     }
+    checkStatusToSetDefaultValue();
   };
 
   const resumeUpload = (index) => {
@@ -250,6 +296,7 @@ export default function Upload() {
     if (updated[index].controller) updated[index].controller.abort();
     updated[index].status = "cancelled";
     setFiles(updated);
+    checkStatusToSetDefaultValue();
   };
 
   const cancelAllUpload = () => {
@@ -260,6 +307,7 @@ export default function Upload() {
       }
     });
     setFiles([]); // clear list
+    checkStatusToSetDefaultValue();
   };
 
   const removeFile = (i) => {
@@ -280,6 +328,7 @@ export default function Upload() {
 
   return (
     <div className={styles.uploadContainer}>
+      <ToastContainer theme="dark" autoClose={5000} position="top-right" />
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h4 className="mb-0 text-white">Upload Files</h4>
@@ -349,31 +398,23 @@ export default function Upload() {
               `${dashboardData?.storage?.used || 0} of
             ${dashboardData?.storage?.total || 0}  remaining`}
           </div>
-          {/* <div className="form-check form-switch text-white mb-3">
-            {/* <input className="form-check-input" type="checkbox" id="autoTag" />
-            <label className="form-check-label" htmlFor="autoTag">
-              Auto-tag files
-            </label> *
-        </div> 
-        */}
-          {/* <button
-            className="btn btn-primary w-100 mb-2"
-            onClick={() => {
-              if (files.length > 0) {
-                files.forEach((f, i) => {
-                  if (f.status === "pending") {
-                    uploadFile(f, i);
-                  }
-                });
-              }
-            }}
-          >
-            {" "}
-            Upload Now
-          </button> */}
+
           <button
             className="btn btn-primary w-100 mb-2"
             onClick={() => {
+              if (files.length === 0) {
+                toast.error("No files selected", {
+                  theme: "dark",
+                  position: "top-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+                return;
+              }
               if (files.length > 0) {
                 files.forEach((f, i) => {
                   if (f.status === "pending") {
@@ -383,7 +424,7 @@ export default function Upload() {
               }
             }}
           >
-            Upload Now
+            {loading ? "Uploading..." : "Upload Now"}
           </button>
           <button
             className="btn btn-outline-secondary w-100"

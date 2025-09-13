@@ -18,8 +18,8 @@ export default function CreateAlbumModal({ onClose }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedFileIds, setSelectedFileIds] = useState([]);
   const [existingFiles, setExistingFiles] = useState([]);
-  const { files } = useContext(FileContext);
-  const { AlbumDispatch, Albums, getDashboardData, dashboardData } =
+  const { files, fetchFiles } = useContext(FileContext);
+  const { Albums, getDashboardData, dashboardData, fetchAlbums } =
     useContext(AlbumContext);
   const [loading, setLoading] = useState(false);
 
@@ -96,31 +96,11 @@ export default function CreateAlbumModal({ onClose }) {
         formData,
         { withCredentials: true }
       );
-
-      if (res.status === 201) {
-        console.log(
-          `Album created with ID: ${res.data.album._id} files that attached: ${res.data.files}`,
-          res
-        );
-        // Dispatch with backend response
-        const payload = {
-          id: uniqueIdGenerator(),
-          _id: res?.data?.album?._id,
-          name: res?.data?.album?.name ? res?.data?.album?.name : albumName,
-          cover: res?.data?.album?.coverImage
-            ? res?.data?.album?.coverImage?.url
-            : null,
-          tags: res?.data?.album?.tags ? res?.data?.album?.tags : [],
-          visibility: res?.data?.album?.accessControl || "private",
-          files: res?.data?.files || [],
-          originalFiles: res?.data?.files || [],
-        };
-        AlbumDispatch({
-          type: "CREATE_ALBUM",
-          payload: payload, // contains _id, name, etc.
-        });
-
-        getDashboardData();
+      if (res?.data?.files.length > 0) {
+        const control = new AbortController();
+        const signal = control.signal;
+        fetchAlbums(1, 5, signal);
+        fetchFiles(1, 10, signal);
         onClose();
       }
     } catch (error) {
@@ -134,6 +114,7 @@ export default function CreateAlbumModal({ onClose }) {
       setVisibility("Private");
       setSelectedFileIds([]);
       setLoading(false);
+      getDashboardData();
     }
   };
 
@@ -190,7 +171,6 @@ export default function CreateAlbumModal({ onClose }) {
                   style={{ display: "none" }}
                   onChange={(e) => {
                     handleCoverPhotoUpload(e.target.files[0]);
-                    console.log(coverPhoto);
                   }}
                 />
               </label>

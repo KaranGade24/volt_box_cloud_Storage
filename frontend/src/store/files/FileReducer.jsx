@@ -400,7 +400,6 @@ function FileReducer(state, action) {
       };
     }
     case "ADD_FILE": {
-      console.log({ a: [...action?.payload, ...state?.files] });
       return {
         ...state,
         files: [...action?.payload, ...state?.files], // add a new file to the top

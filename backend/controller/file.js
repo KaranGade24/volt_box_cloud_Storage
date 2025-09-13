@@ -9,11 +9,55 @@ const formatFileSize = (bytes) => {
   const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
   return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
 };
+function getFileType(extension = "") {
+  const ext = extension.split(".").pop().toLowerCase();
+
+  switch (ext) {
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "gif":
+    case "webp":
+    case "svg":
+      return "image";
+
+    case "mp4":
+    case "mkv":
+    case "avi":
+    case "mov":
+    case "webm":
+      return "video";
+
+    case "mp3":
+    case "wav":
+    case "flac":
+    case "aac":
+      return "audio";
+
+    case "pdf":
+    case "doc":
+    case "docx":
+    case "xls":
+    case "xlsx":
+    case "ppt":
+    case "pptx":
+    case "txt":
+      return "file";
+
+    case "zip":
+    case "rar":
+    case "7z":
+      return "archive";
+
+    default:
+      return "unknown";
+  }
+}
 
 // ✅ Upload One or Multiple Files
+
 export const uploadFiles = async (req, res) => {
   try {
-    console.log("req.files:", req.files);
     const files = req.files || [req.file];
     if (!files || files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
@@ -26,7 +70,7 @@ export const uploadFiles = async (req, res) => {
       const newFile = await File.create({
         name: file.originalname,
         url: result.secure_url,
-        type: result.resource_type,
+        type: getFileType(path.extname(file.originalname)),
         size: formatFileSize(file.size),
         extension: path.extname(file.originalname),
         uploadedBy: req.user.id,
@@ -35,7 +79,7 @@ export const uploadFiles = async (req, res) => {
       });
       results.push(newFile);
     }
-    console.log({ results });
+    console.log("Upload results:", { results });
     res
       .status(200)
       .json({ message: "Files uploaded successfully", files: results });
@@ -46,23 +90,24 @@ export const uploadFiles = async (req, res) => {
 };
 
 // ✅ Get All Files for Current User
+
 export const getUserFiles = async (req, res) => {
   try {
     // Pagination parameters (defaults)
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
     const limit = Math.max(
       1,
-      Math.min(50, parseInt(req.query.limit, 10) || 10)
+      Math.min(10, parseInt(req.query.limit, 10) || 10)
     );
     const albumId = req.query.albumId;
     const isAlbumId = albumId !== "null" ? true : false;
 
-    console.log("Fetching files for user:", req.user.id);
-    console.log("Pagination parameters:", {
-      page,
-      limit,
-      albumId,
-    });
+    // console.log("Fetching files for user:", req.user.id);
+    // console.log("Pagination parameters:", {
+    //   page,
+    //   limit,
+    //   albumId,
+    // });
 
     // Calculate skip value
     const skip = (page - 1) * limit;
@@ -70,23 +115,27 @@ export const getUserFiles = async (req, res) => {
     // Fetch files for this user
 
     const files = await File.find(
-      isAlbumId ? { albumId: albumId } : { uploadedBy: req.user.id }
+      isAlbumId
+        ? { albumId: albumId }
+        : { uploadedBy: req.user.id, albumId: null } // files not in any album
     )
-
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit)
+      .limit(10)
       .lean();
 
     // Count total for pagination
     const totalFiles = await File.countDocuments(
-      isAlbumId ? { albumId: albumId } : { uploadedBy: req.user.id }
+      isAlbumId
+        ? { albumId: albumId }
+        : { uploadedBy: req.user.id, albumId: null } // files not in any album
     );
+
     const totalPages = Math.ceil(totalFiles / limit);
 
     console.log(`Fetched ${files.length} files for user ${req.user.id}`);
 
-    console.log({
+    console.log("Pagination results:", {
       page,
       limit,
       totalFiles,
@@ -115,8 +164,10 @@ export const getFileById = async (req, res) => {
   try {
     const file = await File.findById(req.params.id);
     if (!file) return res.status(404).json({ message: "File not found" });
+    console.log("Fetched file:", file);
     res.status(200).json(file);
   } catch (error) {
+    console.error("Fetch error:", error);
     res.status(500).json({ message: "Error fetching file" });
   }
 };
@@ -130,7 +181,7 @@ export const deleteFile = async (req, res) => {
     await cloudinary.uploader.destroy(file.cloudinaryId, {
       resource_type: file.type === "video" ? "video" : "auto",
     });
-
+    console.log("Deleted file from Cloudinary:", file.cloudinaryId);
     await File.findByIdAndDelete(req.params.id);
     res.status(200).json({ message: "File deleted successfully" });
   } catch (error) {
@@ -172,6 +223,8 @@ export const updateFile = async (req, res) => {
     if (req.body.albumId !== undefined) existingFile.albumId = req.body.albumId;
 
     await existingFile.save();
+
+    console.log("Updated file:", existingFile);
 
     res
       .status(200)

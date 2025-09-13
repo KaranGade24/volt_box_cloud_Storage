@@ -17,7 +17,7 @@ function AlbumContextProvider({ children }) {
   ) => {
     try {
       let data = {};
-      if (!hasMore.current) return (data = { hasMore: false });
+      if (!hasMore.current && page > 1) return (data = { hasMore: false });
 
       setLoadingPara(true);
       const res = await fetch(
@@ -50,11 +50,6 @@ function AlbumContextProvider({ children }) {
       });
 
       if (page === 1) {
-        console.log("setting albums", {
-          totalAlbums: data.totalAlbums,
-          albums: albums,
-        });
-
         // dispatch the initial albums
         AlbumDispatch({
           type: "INITIALIZE_ALBUMS",
@@ -77,15 +72,9 @@ function AlbumContextProvider({ children }) {
       };
       hasMore.current = data.hasMore;
 
-      console.log("dataaaa:  ", {
-        hasMore: hasMore.current,
-        page: data.page,
-        totalPages: data.totalPages,
-      });
-
       return data;
     } catch (error) {
-      console.log("fetchAlbums error:", error);
+      console.error("fetchAlbums error:", error);
     } finally {
       setLoadingPara(false);
     }
@@ -114,11 +103,9 @@ function AlbumContextProvider({ children }) {
         throw new Error(data.message || "Failed to fetch dashboard data");
       }
 
-      console.log("Dashboard data: ", data);
       setDashboardData(data);
       return data;
     } catch (error) {
-      alert("Failed to fetch dashboard data");
       console.error("Error fetching dashboard data:", error);
     }
   };

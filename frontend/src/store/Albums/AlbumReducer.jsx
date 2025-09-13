@@ -83,14 +83,12 @@ export const INITIAL_STATE = {
 function AlbumReducer(state, action) {
   switch (action.type) {
     case "INITIALIZE_ALBUMS": {
-      console.log("action.payload initilize: ", action.payload);
       return {
         ...state,
         Albums: action.payload.Albums,
       };
     }
     case "ADD_ALBUMS":
-      console.log("action.payload", action.payload);
       return {
         ...state,
         Albums: [...state.Albums, ...action.payload],
@@ -101,6 +99,7 @@ function AlbumReducer(state, action) {
         ...state,
         Albums: [...state.Albums, action.payload],
       };
+
     case "ADD_FILES_TO_ALBUM": {
       const { files, AlbumId } = action.payload;
       return {
@@ -109,13 +108,7 @@ function AlbumReducer(state, action) {
           album._id === AlbumId
             ? {
                 ...album,
-                files: [
-                  ...(album.files || []),
-                  ...files.filter(
-                    (newFile) =>
-                      !(album.files || []).some((f) => f._id === newFile._id)
-                  ),
-                ],
+                files: [...album.files, ...files],
               }
             : album
         ),

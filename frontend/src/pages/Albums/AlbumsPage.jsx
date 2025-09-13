@@ -18,7 +18,6 @@ export default function AlbumsPage() {
   const { showCreateModal, setShowCreateModal } = useOutletContext();
   const [loagindMore, setLoagindMore] = useState(false);
   const [page, setPage] = useState(2);
-  console.log("hasmore:;", albumHasMore);
 
   const handleFetchAlbums = async () => {
     const contorller = new AbortController();
@@ -31,7 +30,7 @@ export default function AlbumsPage() {
         setPage(data?.page);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     } finally {
       setLoagindMore(false);
       contorller.abort();

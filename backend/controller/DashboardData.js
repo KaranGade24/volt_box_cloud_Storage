@@ -59,7 +59,7 @@ export const getDashboardData = async (req, res) => {
         imageBytes += bytes;
       } else if (file.type === "video") {
         videoBytes += bytes;
-      } else if (["pdf", "doc", "txt"].includes(file.type)) {
+      } else if ([".pdf", ".txt"].includes(file.extension)) {
         fileBytes += bytes;
       } else {
         otherBytes += bytes;
@@ -72,6 +72,13 @@ export const getDashboardData = async (req, res) => {
       { type: "video", value: formatBytes(videoBytes) },
       { type: "other", value: formatBytes(otherBytes) },
     ];
+
+    console.log("Dashboard data:", {
+      storage,
+      recentUploads,
+      stats,
+      files, // optional: send all
+    });
 
     res.json({
       storage,

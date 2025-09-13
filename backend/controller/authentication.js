@@ -56,6 +56,7 @@ export const signup = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
+    console.log("User created successfully:", newUser);
     // Send success response
     res
       .status(201)
@@ -109,6 +110,7 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
+    console.log("Login successful for user:", user);
     // Send success response
     res.status(200).json({
       message: "Login successful",
@@ -124,6 +126,7 @@ export const logout = async (req, res) => {
   try {
     // If using JWT → clear token from cookies
     res.clearCookie("token", { httpOnly: true, sameSite: "strict" });
+    console.log("Logged out successfully", res?.user);
 
     // If using session → destroy session
     if (req.session) {
@@ -134,6 +137,7 @@ export const logout = async (req, res) => {
       res.status(200).json({ message: "Logged out successfully" });
     }
   } catch (err) {
+    console.error("Error during logout:", err);
     res.status(500).json({ error: "Logout failed" });
   }
 };

@@ -19,24 +19,24 @@ function FileContextProvider({ children }) {
 
   const fetchFiles = async (
     page = 1,
-    limit = 5,
+    limit = 10,
     signal,
     setLoading = setLoading1,
     albumId = null
   ) => {
-    console.log("fetching files.....");
     try {
       let data = {};
 
-      if (!hasMore.current && albumId === null)
+      if (!hasMore.current && albumId === null && page > 1)
         return (data = { hasMore: false });
+
       if (!albumHasMore.current && albumId !== null)
         return (data = { hasMore: false });
 
       setLoading(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/file?${new URLSearchParams({
-          page: albumId !== null ? albumPage : filePage,
+          page,
           limit,
           albumId,
         })}`,
@@ -47,7 +47,6 @@ function FileContextProvider({ children }) {
         }
       );
       data = await res.json();
-      console.log("data:", data);
 
       if (!res.ok) {
         fileActionDispatch({
@@ -59,12 +58,6 @@ function FileContextProvider({ children }) {
 
       if (albumId === null) {
         if (page === 1) {
-          console.log("setting files", {
-            limit: data.limit,
-            totalFiles: data.totalFiles,
-            files: data.files,
-          });
-
           //dispatch the initial files
           fileActionDispatch({
             type: "INITIATE_FILE",
@@ -73,12 +66,12 @@ function FileContextProvider({ children }) {
               count: data?.totalFiles || "undefined",
             },
           });
+        } else {
+          fileActionDispatch({
+            type: "ADD_FILES",
+            payload: data.files,
+          });
         }
-
-        fileActionDispatch({
-          type: "ADD_FILE",
-          payload: data.files,
-        });
       }
 
       data = {
@@ -99,17 +92,25 @@ function FileContextProvider({ children }) {
         }
       }
 
-      console.log("file from file context: ", { data });
       setLoading(false);
 
       return data;
       // data for other files
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    fetchFiles(1, 10, signal);
+    return () => {
+      controller.abort();
+    };
+  }, []);
 
   return (
     <FileContext.Provider
@@ -118,7 +119,7 @@ function FileContextProvider({ children }) {
         files: state.files,
         loading,
         count: state.count,
-        fetchFiles: fetchFiles,
+        fetchFiles,
         albumHasMore,
         hasMore,
         uploadFiles,

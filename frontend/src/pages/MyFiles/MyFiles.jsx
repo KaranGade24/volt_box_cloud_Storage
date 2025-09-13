@@ -65,7 +65,6 @@ export default function MyFiles() {
 
     try {
       // ✅ Make sure to await the async fetchFiles function
-      console.log("currectPage:", currectPage);
       setLoagindMore(true);
       const data = await fetchFiles(currectPage, 10, signal, setLoagindMore);
       setLoagindMore(false);
@@ -73,25 +72,19 @@ export default function MyFiles() {
 
       // ✅ data should now have the result
       setHasMore(currectPage < data.totalPages ? true : false);
-      console.log("hasMore:", hasMore);
       if (hasMore) {
-        console.log("currectPage:", currectPage);
         setCurrentPage(currectPage + 1);
       }
 
-      console.log("Fetched data:", data);
       return data; // optional, if you want to use it elsewhere
     } catch (err) {
       if (err.name === "AbortError") {
-        console.log("Fetch aborted");
       } else {
         console.error("Error fetching files:", err);
       }
       return null;
     }
   };
-
-  // console.log("hasMore:", hasMore);
 
   return (
     <div className={styles.myFilesWrapper}>

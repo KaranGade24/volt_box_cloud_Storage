@@ -15,8 +15,8 @@ export default function FilePreviewModal({
 
   if (!currentFile) return null; // nothing to show
 
-  const getFileType = (fileName) => {
-    const ext = fileName.split(".").pop().toLowerCase();
+  const getFileType = (extension) => {
+    const ext = extension.split(".").pop().toLowerCase();
     if (["jpg", "jpeg", "png", "gif", "webp", "bmp"].includes(ext))
       return "image";
     if (["pdf"].includes(ext)) return "pdf";
@@ -25,18 +25,16 @@ export default function FilePreviewModal({
   };
 
   const renderPreview = (file) => {
-    const type = getFileType(file.name);
-
+    const type = getFileType(file?.extension);
     if (type === "image") {
       return <img src={file.url} alt={file.name} className={styles.preview} />;
     }
     if (type === "pdf") {
       return (
         <iframe
-          src={file.url}
+          src={file?.url}
           title={file.name}
           className={styles.preview}
-          frameBorder="0"
         ></iframe>
       );
     }

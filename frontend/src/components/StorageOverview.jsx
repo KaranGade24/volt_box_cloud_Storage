@@ -19,6 +19,13 @@ export default function StorageOverview({ used, total, percentage }) {
     setTimeout(() => setProgress(percentage), 100);
   }, [percentage, used, total]);
 
+  function progressColor(percent) {
+    if (percent <= 25) return "#43a047"; // green
+    if (percent <= 50) return "#fdd835"; // yellow
+    if (percent <= 75) return "#fb8c00"; // orange
+    return "#e53935"; // red
+  }
+
   return (
     <div className={styles.card}>
       <div className={styles.title}>Storage Overview</div>
@@ -27,7 +34,10 @@ export default function StorageOverview({ used, total, percentage }) {
           <div
             className={styles.progress}
             style={{
-              background: `conic-gradient(var(--primary) ${progress}%, var(--secondary-bg) ${progress}%)`,
+              background: `conic-gradient(
+          ${progressColor(progress)} ${progress}%,
+          var(--secondary-bg, #222) ${progress}%
+        )`,
             }}
           >
             <div className={styles.inner}>
