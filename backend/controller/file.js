@@ -119,8 +119,8 @@ export const getUserFiles = async (req, res) => {
 
     const files = await File.find(
       isAlbumId
-        ? { albumId: mongoose.Types.ObjectId(albumId) }
-        : { uploadedBy: mongoose.Types.ObjectId(req.user.id), albumId: null } // files not in any album
+        ? { albumId: albumId }
+        : { uploadedBy: req.user.id, albumId: null } // files not in any album
     )
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -130,8 +130,8 @@ export const getUserFiles = async (req, res) => {
     // Count total for pagination
     const totalFiles = await File.countDocuments(
       isAlbumId
-        ? { albumId: mongoose.Types.ObjectId(albumId) }
-        : { uploadedBy: mongoose.Types.ObjectId(req.user.id), albumId: null } // files not in any album
+        ? { albumId: albumId }
+        : { uploadedBy: req.user.id, albumId: null } // files not in any album
     );
 
     const totalPages = Math.ceil(totalFiles / limit);

@@ -15,10 +15,9 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).redirect("/login");
     }
 
-    // Attach user object with id property
-    req.user = { id: decoded.user }; // ✅ now you can use req.user.id
-
-    console.log("Auth Middleware Passed user:", req.user);
+    // Use the actual property you set in the JWT
+    req.user = decoded;
+    console.log("Auth Middleware Passed user:", req.user, { decoded });
 
     next();
   } catch (error) {
