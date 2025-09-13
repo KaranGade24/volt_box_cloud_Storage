@@ -136,7 +136,10 @@ export const getUserFiles = async (req, res) => {
 
     const totalPages = Math.ceil(totalFiles / limit);
 
-    console.log(`Fetched ${files.length} files for user ${req.user.id}`);
+    console.log(
+      `Fetched ${files.length} files for user${req.user.id}`,
+      req.user.id
+    );
 
     console.log("Pagination results:", {
       page,

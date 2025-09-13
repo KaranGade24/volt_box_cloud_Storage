@@ -135,7 +135,9 @@ export const getAlbums = async (req, res) => {
     console.log("Albums with files:", albumsWithFiles);
 
     // Get total count for pagination info
-    const totalAlbums = await Album.countDocuments({ createdBy: req.user.id });
+    const totalAlbums = await Album.countDocuments({
+      createdBy: req.user.id,
+    });
     const totalPages = Math.ceil(totalAlbums / limit);
 
     console.log({
