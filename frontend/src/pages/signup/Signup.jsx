@@ -14,11 +14,12 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     //ckeck filds are present or not
     if (
       fullName == "" ||
@@ -83,6 +84,8 @@ function Signup() {
     } catch (error) {
       console.error("❌ Network error:", error);
       toast.error("❌ Network error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -155,7 +158,7 @@ function Signup() {
                 type="submit"
                 className={`${styles.btn} ${styles.primary}`}
               >
-                Sign Up
+                {loading ? "Loading..." : "Create Account"}
               </button>
 
               <div className={styles.orSeparator}>

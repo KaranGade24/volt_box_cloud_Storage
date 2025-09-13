@@ -104,9 +104,15 @@ app.get("/api/", async (req, res) => {
 });
 
 // Routes
+
 //auth
 import authRoutes from "./routes/authentication.js";
 app.use("/api/auth", authRoutes);
+
+//check user login
+app.use("/api/user", authMiddleware, (req, res) => {
+  res.status(200).send({ user: req.user });
+});
 
 //dashboard
 import dashboardRoutes from "./routes/DashboardData.js";

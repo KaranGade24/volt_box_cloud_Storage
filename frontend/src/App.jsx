@@ -53,12 +53,21 @@ function App() {
 
   // 🔹 Check user login
   useEffect(() => {
-    const checkUser = () => {
-      const u = localStorage.getItem("user");
-      if (u) {
-        setUser(JSON.parse(u));
-      } else {
-        setUser(null);
+    const checkUser = async () => {
+      try {
+        const lu = localStorage.getItem("user");
+        const cu = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
+          credentials: "include",
+        });
+        console.log({ cu });
+        if (lu && cu.ok) {
+          setUser(JSON.parse(lu));
+        } else {
+          setUser(null);
+          navigate("/login");
+        }
+      } catch (err) {
+        console.log({ err });
         navigate("/login");
       }
     };
@@ -67,6 +76,8 @@ function App() {
     window.addEventListener("storage", checkUser);
     return () => window.removeEventListener("storage", checkUser);
   }, [navigate, setUser]);
+
+  //
 
   return (
     <>

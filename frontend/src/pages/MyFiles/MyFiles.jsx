@@ -9,7 +9,7 @@ import { FaSpinner } from "react-icons/fa";
 export default function MyFiles() {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [showPreview, setShowPreview] = useState(false);
-  const { files, fileActionDispatch, loading, count, fetchFiles } =
+  const { files, fileActionDispatch, loading, count, fetchFiles, hasMore } =
     useContext(FileContext);
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeInfoId, setActiveInfoId] = useState(null);
@@ -18,7 +18,7 @@ export default function MyFiles() {
   const [filterOption, setFilterOption] = useState("-- Filter By --");
   const menuRef = useRef(null);
   const loaderRef = useRef(null);
-  const [hasMore, setHasMore] = useState(true);
+  // const [hasMore, setHasMore] = useState(true);
   const [currectPage, setCurrentPage] = useState(2);
   const [loagindMore, setLoagindMore] = useState(false);
 
@@ -71,8 +71,8 @@ export default function MyFiles() {
       if (!data) return;
 
       // ✅ data should now have the result
-      setHasMore(currectPage < data.totalPages ? true : false);
-      if (hasMore) {
+      // setHasMore(currectPage < data.totalPages ? true : false);
+      if (hasMore.currect) {
         setCurrentPage(currectPage + 1);
       }
 
@@ -94,96 +94,99 @@ export default function MyFiles() {
           handleSearchOnChange={handleSearchOnChange}
           sortValue={sortValue}
           filterOption={filterOption}
-          title={`My Files ${count}`}
+          title={`My Files ${files.length}`}
         />
-        <div className={styles.filesGrid}>
-          {showPreview && (
-            <FilePreviewModal
-              files={files}
-              onClose={() => setShowPreview(false)}
-              initialIndex={previewIndex}
-            />
-          )}
-
-          {loading ? (
-            <div className={styles.spinnerContainer}>
-              <div className={styles.spinner}></div>
-            </div>
-          ) : files.length === 0 ? (
-            <p
-              style={{
-                textAlign: "center",
-                color: "#aaa",
-                fontSize: "25px",
-                fontWeight: "700",
-                position: "absolute",
-              }}
-            >
-              No files available.
-            </p>
-          ) : (
-            files.map((file, index) => (
-              <FileCard
-                key={file._id + index + file.name}
-                file={file}
-                index={index}
-                menuRef={menuRef}
-                activeMenu={activeMenu}
-                setActiveMenu={setActiveMenu}
-                Dispatch={fileActionDispatch}
-                activeInfoId={activeInfoId}
-                setActiveInfoId={setActiveInfoId}
-                activeRenameId={activeRenameId}
-                setActiveRenameId={setActiveRenameId}
-                setShowPreview={setShowPreview}
-                setPreviewIndex={setPreviewIndex}
+        {files.length > 0 && (
+          <div className={styles.filesGrid}>
+            {showPreview && (
+              <FilePreviewModal
+                files={files}
+                onClose={() => setShowPreview(false)}
+                initialIndex={previewIndex}
               />
-            ))
-          )}
-          {/* loader div → watched by IntersectionObserver */}
-          {!loading && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "20px",
-                position: "relative",
-                bottom: "20px",
-                alignSelf: "center",
-                padding: "10px 20px",
-              }}
-            >
-              <button
-                style={{ padding: "10px 20px", width: "100%" }}
-                disabled={!hasMore}
-                onClick={handleFetchFile}
+            )}
+
+            {loading ? (
+              <div className={styles.spinnerContainer}>
+                <div className={styles.spinner}></div>
+              </div>
+            ) : files.length === 0 ? (
+              <p
+                style={{
+                  textAlign: "center",
+                  color: "#aaa",
+                  fontSize: "25px",
+                  fontWeight: "700",
+                  position: "absolute",
+                }}
               >
-                {loading || loagindMore ? (
-                  <>
-                    Loading files... <FaSpinner speed={1} />{" "}
-                  </>
-                ) : hasMore ? (
-                  "Load More"
-                ) : null}
-                {!hasMore && (
-                  <h4
-                    style={{
-                      color: "#aaa",
-                      wordBreak: "break-all",
-                      fontSize: "20px",
-                      textAlign: "center",
-                      fontWeight: "700",
-                    }}
-                  >
-                    {" "}
-                    No more files to load{" "}
-                  </h4>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
+                No files available.
+              </p>
+            ) : (
+              files.map((file, index) => (
+                <FileCard
+                  key={file._id + index + file.name}
+                  file={file}
+                  index={index}
+                  menuRef={menuRef}
+                  activeMenu={activeMenu}
+                  setActiveMenu={setActiveMenu}
+                  Dispatch={fileActionDispatch}
+                  activeInfoId={activeInfoId}
+                  setActiveInfoId={setActiveInfoId}
+                  activeRenameId={activeRenameId}
+                  setActiveRenameId={setActiveRenameId}
+                  setShowPreview={setShowPreview}
+                  setPreviewIndex={setPreviewIndex}
+                />
+              ))
+            )}
+            {/* loader div → watched by IntersectionObserver */}
+            {!loading && hasMore.currect && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "20px",
+                  position: "relative",
+                  bottom: "20px",
+                  alignSelf: "center",
+                  padding: "10px 20px",
+                }}
+              >
+                <button
+                  style={{ padding: "10px 20px", width: "100%" }}
+                  disabled={!hasMore.current}
+                  onClick={handleFetchFile}
+                >
+                  {loading || loagindMore ? (
+                    <>
+                      Loading files... <FaSpinner speed={1} />{" "}
+                    </>
+                  ) : hasMore.current ? (
+                    "Load More"
+                  ) : null}
+                  {!hasMore.current && (
+                    <h4
+                      style={{
+                        color: "#aaa",
+                        wordBreak: "break-all",
+                        fontSize: "20px",
+                        textAlign: "center",
+                        fontWeight: "700",
+                      }}
+                    ></h4>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {files.length === 0 && (
+          <div className={styles.noFiles}> No files available</div>
+        )}
       </div>
     </div>
   );

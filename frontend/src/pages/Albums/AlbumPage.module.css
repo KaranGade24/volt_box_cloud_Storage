@@ -155,6 +155,17 @@
   z-index: 100;
 }
 
+.noAlbums {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+  background-color: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
 /* -------------- Responsive Breakpoints -------------- */
 @media (max-width: 1024px) {
   .albumCover {

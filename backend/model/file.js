@@ -10,6 +10,10 @@ const fileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    cloudinaryId: {
+      type: String,
+      required: true,
+    },
     type: {
       type: String,
       required: true, // Example: 'image', 'pdf', 'video', 'other'

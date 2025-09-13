@@ -21,7 +21,8 @@ const formatBytes = (bytes) => {
 
 export const getDashboardData = async (req, res) => {
   try {
-    const files = await File.find().sort({ createdAt: -1 });
+    const id = req?.user?.id;
+    const files = await File.find({uploadedBy:id}).sort({ createdAt: -1 });
 
     // ===== Storage overview =====
     const totalUsedBytes = files.reduce(

@@ -50,83 +50,78 @@ export default function AlbumsPage() {
           </button>
         </div>
 
-        <div className={styles.albumGrid}>
-          {Albums.map((album, index) => (
-            <div
-              onClick={() => {
-                navigate(`/album/${album._id}`);
-              }}
-              key={album._id + index}
-              className={styles.albumCard}
-            >
-              <img
-                src={album.coverImage?.url}
-                alt={album.name}
-                className={styles.albumCover}
-              />
-              <h3>{album.name}</h3>
-              <div className={styles.tagGroup}>
-                {album.tags.map((tag, i) => (
-                  <span key={i} className={styles.tag}>
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-              <span
-                className={
-                  album?.accessControl === "Public"
-                    ? styles.public
-                    : styles.private
-                }
+        {Albums.lenght > 0 && (
+          <div className={styles.albumGrid}>
+            {Albums.map((album, index) => (
+              <div
+                onClick={() => {
+                  navigate(`/album/${album._id}`);
+                }}
+                key={album._id + index}
+                className={styles.albumCard}
               >
-                {album?.accessControl}
-              </span>
-            </div>
-          ))}
-          <br />
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "20px",
-              position: "relative",
-              bottom: "20px",
-              alignSelf: "center",
-              padding: "10px 20px",
-            }}
-          >
-            <button
+                <img
+                  src={album.coverImage?.url}
+                  alt={album.name}
+                  className={styles.albumCover}
+                />
+                <h3>{album.name}</h3>
+                <div className={styles.tagGroup}>
+                  {album.tags.map((tag, i) => (
+                    <span key={i} className={styles.tag}>
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+                <span
+                  className={
+                    album?.accessControl === "Public"
+                      ? styles.public
+                      : styles.private
+                  }
+                >
+                  {album?.accessControl}
+                </span>
+              </div>
+            ))}
+            <br />
+            <div
               style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "20px",
+                position: "relative",
+                bottom: "20px",
+                alignSelf: "center",
                 padding: "10px 20px",
               }}
-              disabled={!albumHasMore.current}
-              onClick={handleFetchAlbums}
             >
-              {loading || loagindMore ? (
-                <>
-                  Loading albums... <FaSpinner speed={1} />{" "}
-                </>
-              ) : albumHasMore.current ? (
-                "Load More"
-              ) : null}
-              {!albumHasMore.current && (
-                <h4
+              {albumHasMore.current && (
+                <button
                   style={{
-                    color: "#aaa",
-                    wordBreak: "break-all",
-                    fontSize: "20px",
-                    textAlign: "center",
-                    fontWeight: "700",
+                    padding: "10px 20px",
                   }}
+                  disabled={!albumHasMore.current}
+                  onClick={handleFetchAlbums}
                 >
-                  {" "}
-                  No more albums to load{" "}
-                </h4>
+                  {loading || loagindMore ? (
+                    <>
+                      Loading albums... <FaSpinner speed={1} />{" "}
+                    </>
+                  ) : albumHasMore.current ? (
+                    "Load More"
+                  ) : null}
+                  {!albumHasMore.current && null}
+                </button>
               )}
-            </button>
+            </div>
           </div>
-        </div>
+        )}
+
+        {Albums.length === 0 && (
+          <div className={styles.noAlbums}> No albums available</div>
+        )}
 
         {showCreateModal && (
           <div className={styles.modalWrapper}>

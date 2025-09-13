@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../pages/MyFiles/MyFiles.module.css";
 import {
   FaFilePdf,
@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import RenameFileCard from "./RenameFileCard";
 import FileInfoCard from "./FileInfoCard";
+import { toast } from "react-toastify";
 
 const handleDownload = (file) => window.open(file.url, "_blank");
 
@@ -59,6 +60,47 @@ function FileCard({
   setPreviewIndex,
   AlbumId,
 }) {
+  const [loading, setLoading] = useState(false);
+
+  const handleDeleteFile = async (fileId) => {
+    try {
+      setLoading(true);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/file/${fileId}`,
+        {
+          method: "DELETE", // correct method
+          credentials: "include", // include cookies (for auth)
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to delete file");
+      }
+
+      const data = await res.json();
+      console.log("File deleted:", data);
+      Dispatch({
+        type: "DELETE_FILE",
+        payload: { fileId: file._id },
+      });
+      // Optionally refresh UI or update state here
+    } catch (error) {
+      console.error("Error deleting file:", error);
+      toast.error("Error deleting file", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       onClick={() => {
@@ -114,13 +156,11 @@ function FileCard({
                 e.stopPropagation();
                 setActiveInfoId(null);
                 setActiveRenameId(null);
-                Dispatch({
-                  type: "DELETE_FILE",
-                  payload: { fileId: file._id },
-                });
+                handleDeleteFile(file._id);
               }}
             >
-              <FaTrash /> Delete
+              <FaTrash />
+              {loading ? "deleting..." : "delete"}
             </div>
           </div>
         )}

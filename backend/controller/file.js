@@ -181,16 +181,32 @@ export const getFileById = async (req, res) => {
 // ✅ Delete File (DB + Cloudinary)
 export const deleteFile = async (req, res) => {
   try {
-    const file = await File.findById(req.params.id);
+    const file = await File.findById(req.params.fileId);
+    console.log("files id: ", req.params.fileId, "file: ", file);
+
     if (!file) return res.status(404).json({ message: "File not found" });
 
+    let resourceType = "image"; // default
+    if (file.type === "video") {
+      resourceType = "video";
+    } else if (
+      file.type === "file" ||
+      (file.extension !== ".jpg" && file.extension !== ".png")
+    ) {
+      resourceType = "raw"; // non-image files go here
+    }
+
     await cloudinary.uploader.destroy(file.cloudinaryId, {
-      resource_type: file.type === "video" ? "video" : "auto",
+      resource_type: resourceType,
     });
+
     console.log("Deleted file from Cloudinary:", file.cloudinaryId);
-    await File.findByIdAndDelete(req.params.id);
+
+    await File.findByIdAndDelete(req.params.fileId);
+
     res.status(200).json({ message: "File deleted successfully" });
   } catch (error) {
+    console.error("Delete error:", error);
     res.status(500).json({ message: "Failed to delete file" });
   }
 };
