@@ -63,6 +63,9 @@ export const uploadFiles = async (req, res) => {
       return res.status(400).json({ message: "No files uploaded" });
     }
 
+    console.log("uploadedby: ", req.user.id);
+    console.log("albumId: ", req.body.albumId);
+
     const results = [];
 
     for (const file of files) {

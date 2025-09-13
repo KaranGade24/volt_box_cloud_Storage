@@ -32,7 +32,6 @@ app.use(
 );
 app.options("/api/file/:id", cors());
 app.use(cookeiParser());
-app.use("/api/auth", authRoutes);
 
 // Connections
 connectDB();
