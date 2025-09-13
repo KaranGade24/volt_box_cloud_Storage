@@ -20,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
     // Attach user info to request object
     req.user = decoded;
 
-    console("Auth Middleware Passed user: ", req.user);
+    console.log("Auth Middleware Passed user: ", req.user);
 
     next(); // Proceed to the next middleware or route
   } catch (error) {
