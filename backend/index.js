@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import cookeiParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 import authMiddleware from "./middlewares/authentication.js";
@@ -25,14 +25,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
+    origin:
+      "https://reimagined-space-disco-jxwq7567vj43q4j9-5173.app.github.dev",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
   })
 );
-app.options("/api/file/:id", cors());
-app.use(cookeiParser());
-
+// app.options("*", cors());
+app.use(cookieParser());
 // Connections
 connectDB();
 
