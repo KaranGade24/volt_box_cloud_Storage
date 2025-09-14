@@ -24,20 +24,34 @@ export default function FilePreviewModal({
     return "other";
   };
 
+  const handleDownload = async (file) => {
+    const response = await fetch(file.url);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.name; // force custom name
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
   const renderPreview = (file) => {
     const type = getFileType(file?.extension);
     if (type === "image") {
       return <img src={file.url} alt={file.name} className={styles.preview} />;
     }
-    if (type === "pdf") {
-      return (
-        <iframe
-          src={file?.url}
-          title={file.name}
-          className={styles.preview}
-        ></iframe>
-      );
-    }
+    // if (type === "pdf") {
+    //   return (
+    //     <iframe
+    //       src={file?.url}
+    //       title={file.name}
+    //       className={styles.preview}
+    //     ></iframe>
+    //   );
+    // }
     if (type === "video") {
       return (
         <video controls className={styles.preview}>
@@ -49,9 +63,9 @@ export default function FilePreviewModal({
     return (
       <div className={styles.unknown}>
         <p>No preview available</p>
-        <a href={file.url} download>
+        <button onClick={() => handleDownload(file)}>
           Download {file.name}
-        </a>
+        </button>
       </div>
     );
   };

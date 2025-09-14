@@ -50,7 +50,7 @@ export default function AlbumsPage() {
           </button>
         </div>
 
-        {Albums.lenght > 0 && (
+        {Albums.length > 0 && (
           <div className={styles.albumGrid}>
             {Albums.map((album, index) => (
               <div

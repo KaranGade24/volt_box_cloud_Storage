@@ -158,29 +158,31 @@ function AlbumPage() {
             </div>
           )}
 
-          <button disabled={!albumHasMore.current} onClick={handleFetchAlbums}>
-            {loading || loagindMore ? (
-              <>
-                Loading files... <FaSpinner speed={1} />{" "}
-              </>
-            ) : albumHasMore.current ? (
-              "Load More"
-            ) : null}
-            {!albumHasMore.current && (
-              <h4
-                style={{
-                  color: "#aaa",
-                  wordBreak: "break-all",
-                  fontSize: "20px",
-                  textAlign: "center",
-                  fontWeight: "700",
-                }}
-              >
-                {" "}
-                No more files to load{" "}
-              </h4>
-            )}
-          </button>
+          {albumHasMore.current && (
+            <button
+              disabled={!albumHasMore.current}
+              onClick={handleFetchAlbums}
+            >
+              {loading || loagindMore ? (
+                <>
+                  Loading files... <FaSpinner speed={1} />{" "}
+                </>
+              ) : albumHasMore.current ? (
+                "Load More"
+              ) : null}
+              {!albumHasMore.current && (
+                <h4
+                  style={{
+                    color: "#aaa",
+                    wordBreak: "break-all",
+                    fontSize: "20px",
+                    textAlign: "center",
+                    fontWeight: "700",
+                  }}
+                ></h4>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
