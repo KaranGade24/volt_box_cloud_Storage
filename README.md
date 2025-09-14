@@ -212,15 +212,3 @@ VITE_API_URL=http://localhost:5000/api
 4. Manage your profile and app settings.
 
 ---
-
-## 🔊 LinkedIn Post (ready-to-paste)
-
-> 🚀 Excited to share **VoltBox Cloud Storage** — my full-stack MERN cloud storage app is live!
-> 💾 Features: upload, rename, delete files, organize into albums, responsive dashboard, secure JWT auth with OTP, Cloudinary media storage.
-> ✨ Built with React, Node.js, Express, MongoDB, Multer, Cloudinary.
-> 🔗 Live Demo: [https://voltbox.onrender.com](https://voltbox.onrender.com)
-> 🔗 Source Code: [https://github.com/KaranGade24/volt_box_cloud_Storage](https://github.com/KaranGade24/volt_box_cloud_Storage)
-> This project was a deep dive into **full-stack file management, authentication, and cloud storage**. Would love your feedback!
-> \#MERNStack #ReactJS #NodeJS #FullStackDeveloper #CloudStorage #WebDevelopment #TechProjects #CodingLife
-
----
