@@ -79,11 +79,6 @@ function FileContextProvider({ children }) {
         page: data.page + 1,
         hasMore: data.page + 1 <= data.totalPages ? true : false,
       };
-      console.log({
-        pages: data.totalPages,
-        page: data.page,
-        hasMore: data.hasMore,
-      });
       if (albumId === null) {
         hasMore.current = data.hasMore;
         if (data.hasMore) {

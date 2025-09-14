@@ -59,7 +59,6 @@ function App() {
         const cu = await fetch(`${import.meta.env.VITE_API_URL}/user`, {
           credentials: "include",
         });
-        console.log({ cu });
         if (lu && cu.ok) {
           setUser(JSON.parse(lu));
         } else {
@@ -67,7 +66,7 @@ function App() {
           navigate("/login");
         }
       } catch (err) {
-        console.log({ err });
+        console.error({ err });
         navigate("/login");
       }
     };

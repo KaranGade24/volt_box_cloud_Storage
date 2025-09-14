@@ -79,7 +79,6 @@ function FileCard({
       }
 
       const data = await res.json();
-      console.log("File deleted:", data);
       Dispatch({
         type: "DELETE_FILE",
         payload: { fileId: file._id },

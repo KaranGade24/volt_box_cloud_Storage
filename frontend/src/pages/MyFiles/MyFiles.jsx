@@ -94,7 +94,7 @@ export default function MyFiles() {
           handleSearchOnChange={handleSearchOnChange}
           sortValue={sortValue}
           filterOption={filterOption}
-          title={`My Files ${files.length}`}
+          title={`My Files ${count}`}
         />
         {files.length > 0 && (
           <div className={styles.filesGrid}>
@@ -142,7 +142,7 @@ export default function MyFiles() {
               ))
             )}
             {/* loader div → watched by IntersectionObserver */}
-            {!loading && hasMore.currect && (
+            {hasMore.currect && (
               <div
                 style={{
                   display: "flex",
@@ -184,7 +184,7 @@ export default function MyFiles() {
           </div>
         )}
 
-        {files.length === 0 && (
+        {count === 0 && (
           <div className={styles.noFiles}> No files available</div>
         )}
       </div>
