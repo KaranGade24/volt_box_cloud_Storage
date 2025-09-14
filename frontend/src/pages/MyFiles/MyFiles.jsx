@@ -72,7 +72,7 @@ export default function MyFiles() {
 
       // ✅ data should now have the result
       // setHasMore(currectPage < data.totalPages ? true : false);
-      if (hasMore.currect) {
+      if (hasMore.current) {
         setCurrentPage(currectPage + 1);
       }
 
@@ -142,7 +142,7 @@ export default function MyFiles() {
               ))
             )}
             {/* loader div → watched by IntersectionObserver */}
-            {hasMore.currect && (
+            {hasMore.current && (
               <div
                 style={{
                   display: "flex",
