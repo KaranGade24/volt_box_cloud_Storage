@@ -75,8 +75,8 @@ function Signup() {
         setPassword("");
         setConfirmPassword("");
         setAgreeTerms(false);
-        localStorage.setItem("user", JSON.stringify(doc));
-        navigate("/dashboard");
+        // localStorage.setItem("user", JSON.stringify(doc));
+        navigate("/login");
       } else {
         console.error("❌ Error from server:", doc?.message || "");
         toast.error("❌ server error");

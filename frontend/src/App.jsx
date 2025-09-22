@@ -84,8 +84,8 @@ function App() {
 
       {(!!albumId && Albums.length === 0) || user === null ? (
         <div className={styles.loadingScreen}>
-          <div className={styles.spinner}></div>
-          <p>Loading...</p>
+          {/* <img src="/logo.png" alt="VoltBox Logo" className={styles.logo} /> */}
+          <h1 className={styles.title}>VoltBox</h1>
         </div>
       ) : (
         user !== null && (

@@ -10,10 +10,16 @@
     <title>VoltBox – Personal Cloud Storage</title>
 
     <!-- Description (SEO) -->
-    <meta name="description" content="VoltBox is a secure, responsive personal cloud storage app built with the MERN stack. Upload, organize, and manage files and albums with Cloudinary-backed media storage and JWT-based authentication." />
+    <meta
+      name="description"
+      content="VoltBox is a secure, responsive personal cloud storage app built with the MERN stack. Upload, organize, and manage files and albums with Cloudinary-backed media storage and JWT-based authentication."
+    />
 
     <!-- Keywords (optional) -->
-    <meta name="keywords" content="VoltBox, cloud storage, personal cloud, file management, album, file upload, Cloudinary, Multer, MERN" />
+    <meta
+      name="keywords"
+      content="VoltBox, cloud storage, personal cloud, file management, album, file upload, Cloudinary, Multer, MERN"
+    />
 
     <!-- Author -->
     <meta name="author" content="VoltBox Team" />
@@ -22,22 +28,34 @@
     <meta name="theme-color" content="#0B1A2B" />
 
     <!-- Favicon & Touch Icon -->
-    <link rel="icon" href="/logo.png" type="image/png" />
-    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="icon" href="/favicon.svg" type="image/svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
     <!-- Open Graph (social) -->
     <meta property="og:title" content="VoltBox – Personal Cloud Storage" />
-    <meta property="og:description" content="VoltBox lets you securely upload, organize, and access files from anywhere. Features album management, storage dashboard, and Cloudinary media support." />
+    <meta
+      property="og:description"
+      content="VoltBox lets you securely upload, organize, and access files from anywhere. Features album management, storage dashboard, and Cloudinary media support."
+    />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://voltbox.onrender.com/" />
-    <meta property="og:image" content="https://voltbox.onrender.com/preview.png" />
+    <meta
+      property="og:image"
+      content="https://voltbox.onrender.com/preview.png"
+    />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="VoltBox – Personal Cloud Storage" />
-    <meta name="twitter:description" content="Secure and responsive cloud storage built with the MERN stack — album management, file uploads, and Cloudinary integration." />
-    <meta name="twitter:image" content="https://voltbox.onrender.com/preview.png" />
+    <meta
+      name="twitter:description"
+      content="Secure and responsive cloud storage built with the MERN stack — album management, file uploads, and Cloudinary integration."
+    />
+    <meta
+      name="twitter:image"
+      content="https://voltbox.onrender.com/preview.png"
+    />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://voltbox.onrender.com/" />
@@ -48,29 +66,41 @@
     <!-- Preconnect & Preload for performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" href="/fonts/Inter-Regular.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/Inter-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/Inter-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/Inter-Bold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <!-- Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "VoltBox",
-      "operatingSystem": "Web",
-      "applicationCategory": "Utility",
-      "url": "https://voltbox.onrender.com/",
-      "image": "https://voltbox.onrender.com/preview.png",
-      "description": "VoltBox is a secure personal cloud storage app built with the MERN stack that supports file uploads, album management, and Cloudinary-backed media storage.",
-      "publisher": {
-        "@type": "Organization",
-        "name": "VoltBox Team",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://voltbox.onrender.com/logo.png"
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "VoltBox",
+        "operatingSystem": "Web",
+        "applicationCategory": "Utility",
+        "url": "https://voltbox.onrender.com/",
+        "image": "https://voltbox.onrender.com/preview.png",
+        "description": "VoltBox is a secure personal cloud storage app built with the MERN stack that supports file uploads, album management, and Cloudinary-backed media storage.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "VoltBox Team",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://voltbox.onrender.com/logo.png"
+          }
         }
       }
-    }
     </script>
 
     <!-- Optional: analytics preconnect / CDN -->
@@ -78,23 +108,77 @@
 
     <!-- Styles / fonts loaded by app -->
     <!-- Example font link (optional) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body style="background: #000 url('/logo.png') no-repeat center center fixed; background-size: 200px auto; min-height: 100vh;">
-    <div id="root"></div>
+  <body>
+    <!-- Preloader -->
+    <div id="preloader">
+      <h1 class="title">VoltBox</h1>
+    </div>
 
-    <!-- Main JS (Vite / React entry) -->
+    <!-- React root (hidden until ready) -->
+    <div id="root" style="display: none"></div>
+
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Optional: analytics placeholder
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_MEASUREMENT_ID');
-    </script>
-    -->
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+        font-family: "Inter", sans-serif;
+        color: #00bfff;
+        text-align: center;
+      }
+
+      #preloader {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .logo {
+        width: 120px;
+        height: auto;
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      .title {
+        margin-top: 20px;
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        animation: glow 2s infinite ease-in-out;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.9);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.9);
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          text-shadow: 0 0 5px #00bfff, 0 0 20px #00bfff;
+        }
+        50% {
+          text-shadow: 0 0 10px #00e5ff, 0 0 30px #00e5ff;
+        }
+      }
+    </style>
   </body>
 </html>
